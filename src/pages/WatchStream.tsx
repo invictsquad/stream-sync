@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
-  Users, Heart, Share2, MessageSquare, Send, Bell, ThumbsUp, 
-  DollarSign, X, Gem, Gift, Star, Crown, Trophy, Sparkles, LucideIcon 
+Users, Heart, Share2, MessageSquare, Send, Bell, ThumbsUp, 
+DollarSign, X, Gem, Gift, Star, Crown, Trophy, Sparkles, LucideIcon 
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
