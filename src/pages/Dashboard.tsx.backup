@@ -147,21 +147,6 @@ export default function Dashboard() {
             </div>
           </section>
 
-          {/* Monetização PIX */}
-          <section className="bg-secondary/30 border border-white/5 rounded-[2.5rem] p-8">
-            <h2 className="text-xl mb-6 flex items-center gap-2 uppercase font-black italic"><Wallet className="text-primary" /> Receber Apoio (PIX)</h2>
-            <div className="flex flex-col md:flex-row gap-4">
-              <Input 
-                placeholder="Sua chave PIX" 
-                value={pixKey}
-                onChange={(e) => setPixKey(e.target.value)}
-                className="bg-background border-white/10 h-14 rounded-2xl text-primary focus:border-primary"
-              />
-              <Button onClick={() => toast.success("PIX configurado!")} className="btn-gold h-14 px-10 rounded-2xl">Salvar</Button>
-            </div>
-            <p className="text-[10px] text-slate-500 mt-4 uppercase font-bold tracking-tighter italic">Esta chave será exibida para os espectadores na página da live.</p>
-          </section>
-
           {/* Analytics - KPIs */}
           <section className="space-y-6">
             <h2 className="text-xl uppercase font-black italic flex items-center gap-2"><BarChart3 className="text-primary" /> Analytics Diamond</h2>
