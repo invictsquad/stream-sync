@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
-Users, Heart, Share2, MessageSquare, Send, Bell, ThumbsUp, 
-DollarSign, X, Gem, Gift, Star, Crown, Trophy, Sparkles, LucideIcon 
+  Users, Heart, Share2, MessageSquare, Send, Bell, ThumbsUp, 
+  DollarSign, X, Gem, Gift, Star, Crown, Trophy, Sparkles, LucideIcon, Mic
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,21 +23,28 @@ const GIFTS = [
   { id: 'g4', name: 'Clutch Crown', price: 5000, icon: Crown, color: 'gradient-text' },
 ];
 
+interface Message {
+  id: number;
+  user: string;
+  text: string;
+  type: 'system' | 'gift' | 'chat' | 'voice';
+  giftIcon?: LucideIcon;
+}
+
 export default function WatchStream() {
   const { id } = useParams();
   const stream = MOCK_LIVES.find(l => l.id === Number(id)) || MOCK_LIVES[0];
   
-  // States
   const [likes, setLikes] = useState(Math.floor(Math.random() * 5000));
   const [hasLiked, setHasLiked] = useState(false);
   const [showPix, setShowPix] = useState(false);
   const [showGiftShop, setShowGiftShop] = useState(false);
-  const [userBalance, setUserBalance] = useState(1500); // Saldo inicial simulado
-  const [messages, setMessages] = useState([
-    { id: 1, user: 'Sistema', text: 'Respeite a comunidade Diamond.', type: 'system' }
+  const [userBalance, setUserBalance] = useState(1500);
+  const [messages, setMessages] = useState<Message[]>([
+    { id: 1, user: 'Sistema', text: 'Respeite a comunidade Diamond.', type: 'system', giftIcon: undefined }
   ]);
+  const [activeGiftAlert, setActiveGiftAlert] = useState<{ name: string, icon: LucideIcon } | null>(null);
 
-  // Carregar saldo do localStorage
   useEffect(() => {
     const savedBalance = localStorage.getItem('clutch_diamonds');
     if (savedBalance) setUserBalance(Number(savedBalance));
@@ -59,7 +66,7 @@ export default function WatchStream() {
     const newBalance = userBalance - gift.price;
     updateBalance(newBalance);
 
-    const newMessage = {
+    const newMessage: Message = {
       id: Date.now(),
       user: 'Você',
       text: `enviou um ${gift.name.toUpperCase()}! 💎`,
@@ -70,10 +77,24 @@ export default function WatchStream() {
     setMessages(prev => [...prev, newMessage]);
     setShowGiftShop(false);
     
+    // Trigger Gift Alert (Novo Requisito)
+    setActiveGiftAlert({ name: gift.name, icon: gift.icon });
+    setTimeout(() => setActiveGiftAlert(null), 5000);
+
     toast.success(`${gift.name} enviado!`, {
       style: { background: '#D4AF37', color: '#000' },
       icon: <gift.icon size={16} />
     });
+  };
+
+  const handleSimulateVoiceMessage = () => {
+    const voiceMessage: Message = {
+      id: Date.now() + 1,
+      user: 'VoiceUser',
+      text: 'Isso é uma transcrição de voz em tempo real!',
+      type: 'voice'
+    };
+    setMessages(prev => [...prev, voiceMessage]);
   };
 
   return (
@@ -91,7 +112,26 @@ export default function WatchStream() {
 
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
         
-        {/* Modais de Interação */}
+        {/* Gift Alert Banner (Novo Requisito) */}
+        <AnimatePresence>
+          {activeGiftAlert && (
+            <motion.div
+              initial={{ y: -100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -100, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 100, damping: 10 }}
+              className="absolute top-24 left-1/2 -translate-x-1/2 z-50 p-4 rounded-2xl bg-primary/90 backdrop-blur-md text-black font-black uppercase italic shadow-glow-lg border border-primary"
+            >
+              <div className="flex items-center gap-3">
+                <activeGiftAlert.icon size={24} className="text-black fill-black" />
+                <span className="text-sm">Presente Recebido: {activeGiftAlert.name}!</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Modais de Interação (PIX e Shop) */}
+        {/* ... (Modais de PIX e Shop permanecem aqui) ... */}
         <AnimatePresence>
           {showPix && (
             <motion.div 
@@ -208,13 +248,14 @@ export default function WatchStream() {
           </div>
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
              {messages.map((m) => (
-               <div key={m.id} className={`text-xs ${m.type === 'gift' ? 'bg-primary/10 border border-primary/20 p-3 rounded-xl gold-glow animate-in zoom-in-95 duration-300' : ''}`}>
+               <div key={m.id} className={`text-xs ${m.type === 'gift' ? 'bg-primary/10 border border-primary/20 p-3 rounded-xl gold-glow animate-in zoom-in-95 duration-300' : ''} ${m.type === 'voice' ? 'bg-secondary/50 border border-white/10 p-2 rounded-lg' : ''}`}>
                  {m.type === 'gift' && m.giftIcon && (
                    <div className="flex items-center gap-2 mb-1">
                       <m.giftIcon size={14} className="text-primary" />
                       <span className="text-[9px] font-black uppercase text-primary tracking-widest">Presente Elite</span>
                    </div>
                  )}
+                 {m.type === 'voice' && <Mic size={12} className="text-red-500 mr-1 inline" />}
                  <span className={`${m.type === 'gift' ? 'text-white' : 'text-primary'} font-black italic mr-2`}>{m.user}:</span> 
                  <span className={m.type === 'gift' ? 'text-slate-200 font-bold' : 'text-slate-400 font-medium'}>{m.text}</span>
                </div>
@@ -223,6 +264,9 @@ export default function WatchStream() {
           <form className="p-6 bg-black border-t border-white/5 flex gap-3">
             <Input placeholder="Diga algo VIP..." className="bg-secondary border-white/5 text-xs h-12 rounded-xl" />
             <Button size="icon" className="btn-gold h-12 w-12 rounded-xl shrink-0"><Send size={18}/></Button>
+            <Button type="button" size="icon" variant="secondary" className="h-12 w-12 rounded-xl shrink-0" onClick={handleSimulateVoiceMessage}>
+              <Mic size={18} className="text-red-500" />
+            </Button>
           </form>
         </div>
       </main>

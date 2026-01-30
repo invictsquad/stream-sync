@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Video, Copy, RefreshCcw, Eye, EyeOff, LayoutDashboard, Wallet, 
-  MessageSquare, ShieldCheck, Lock, Globe, Beaker, Plus, X, UserPlus 
+  MessageSquare, ShieldCheck, Lock, Globe, Beaker, Plus, X, UserPlus, Gamepad2 
 } from 'lucide-react';
 import { INGEST_BASE_URL } from '../lib/config';
 import { Link } from 'react-router-dom';
@@ -10,17 +10,22 @@ import { Input } from "@/components/ui/input";
 import { BrandLogo } from '../components/BrandLogo';
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const GAME_CATEGORIES = [
+  "Games", "CS2", "Valorant", "Free Fire", "League of Legends", "Just Chatting", "Música", "Tecnologia"
+];
 
 export default function Dashboard() {
   const [streamKey] = useState("clutch_diamond_" + Math.random().toString(36).substring(2, 12));
   const [showKey, setShowKey] = useState(false);
   const [pixKey, setPixKey] = useState("");
   
-  // Novos Estados
   const [isTestMode, setIsTestMode] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [newModName, setNewModName] = useState("");
   const [moderators, setModerators] = useState(['ClutchBot', 'Admin_Elite']);
+  const [selectedCategory, setSelectedCategory] = useState(GAME_CATEGORIES[0]);
 
   const chatOverlayUrl = `${window.location.origin}/overlay/chat/diamond-user`;
 
@@ -86,6 +91,31 @@ export default function Dashboard() {
               </div>
               <p className="text-slate-600 font-bold text-xs uppercase tracking-widest italic">Aguardando Conexão OBS</p>
             </div>
+          </section>
+
+          {/* Seleção de Categoria/Jogo */}
+          <section className="bg-secondary/30 border border-white/5 rounded-[2.5rem] p-8">
+            <div className="flex items-center gap-2 mb-6">
+              <Gamepad2 className="text-primary" size={20} />
+              <h2 className="text-xl uppercase font-black italic">Categoria da Live</h2>
+            </div>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Selecione o Jogo/Tópico</label>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-full bg-background border-white/10 h-12 rounded-xl text-sm focus:border-primary">
+                    <SelectValue placeholder="Selecione a categoria" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-secondary border-white/10">
+                    {GAME_CATEGORIES.map(cat => (
+                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button className="md:mt-6 btn-gold h-12 px-10 rounded-2xl">Atualizar</Button>
+            </div>
+            <p className="text-[10px] text-slate-500 mt-4 uppercase font-bold tracking-tighter italic">Categoria atual: {selectedCategory}</p>
           </section>
 
           {/* Gerenciamento de Moderadores */}
