@@ -11,11 +11,10 @@ import { BrandLogo } from '../components/BrandLogo';
 import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
 
-// --- MOCK DATA ---
 const MOCK_LIVES = [
-  { id: 1, streamer: 'Gaules', title: 'Major de CS2 - Clutch Live Diamond Stream', viewers: '185k', category: 'Games', avatar: 'https://i.pravatar.cc/150?u=gaules', pix: 'gaules@clutch.live', isSubscribed: false },
-  { id: 2, streamer: 'SmileyDev', title: 'Codando a Clutch Live Gold com IA', viewers: '2.3k', category: 'Tecnologia', avatar: 'https://i.pravatar.cc/150?u=dev', pix: 'dev@clutch.live', isSubscribed: true },
-  { id: 3, streamer: 'Nobru', title: 'Final da Copa Free Fire - Exclusivo Clutch', viewers: '88k', category: 'Games', avatar: 'https://i.pravatar.cc/150?u=nobru', pix: 'nobru@clutch.live', isSubscribed: false },
+  { id: 1, streamer: 'Gaules', title: 'Major de CS2 - Clutch Live Diamond Stream', viewers: '185k', category: 'Games', avatar: 'https://i.pravatar.cc/150?u=gaules', pix: 'gaules@clutch.live', isFollowing: true, isSubscribed: false },
+  { id: 2, streamer: 'SmileyDev', title: 'Codando a Clutch Live Gold com IA', viewers: '2.3k', category: 'Tecnologia', avatar: 'https://i.pravatar.cc/150?u=dev', pix: 'dev@clutch.live', isFollowing: false, isSubscribed: true },
+  { id: 3, streamer: 'Nobru', title: 'Final da Copa Free Fire - Exclusivo Clutch', viewers: '88k', category: 'Games', avatar: 'https://i.pravatar.cc/150?u=nobru', pix: 'nobru@clutch.live', isFollowing: false, isSubscribed: false },
 ];
 
 const GIFTS = [
@@ -147,7 +146,22 @@ export default function WatchStream() {
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica de envio de mensagem...
+    if (!chatMessage.trim()) return;
+    
+    let text = chatMessage;
+    // Simulação de menção (@usuário)
+    if (text.startsWith('@')) {
+      text = `(Menção) ${text}`;
+    }
+
+    const newMessage: Message = {
+      id: Date.now(),
+      user: 'Espectador',
+      text: text,
+      type: 'chat'
+    };
+    setMessages(prev => [...prev, newMessage]);
+    setChatMessage('');
   };
 
   const handleFollow = () => {
@@ -249,10 +263,9 @@ export default function WatchStream() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
 
-        {/* Modal de Inscrição (Novo) */}
         {showSubscriptionModal && (
           <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
             <div className="bg-secondary border border-primary/30 rounded-[2.5rem] p-8 max-w-3xl w-full relative gold-glow">
@@ -291,6 +304,7 @@ export default function WatchStream() {
         {/* Player e Controles */}
         <div className="flex-1 overflow-y-auto scrollbar-hide">
           <div className="aspect-video bg-black relative">
+            {/* Player Mock */}
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black to-secondary/20">
                <BrandLogo size={60} withText={false} className="opacity-10" />
             </div>
@@ -329,14 +343,11 @@ export default function WatchStream() {
               </div>
 
               <div className="flex items-center gap-3">
-                <Button 
-                  onClick={() => setShowSubscriptionModal(true)} 
-                  className={`font-black text-[10px] rounded-2xl h-12 px-6 uppercase italic transition-colors ${isSubscribed ? 'bg-fuchsia-600 hover:bg-fuchsia-700 text-white' : 'btn-gold'}`}
-                >
-                  <Crown size={16} className="mr-2" /> {isSubscribed ? 'Membro Elite' : 'Inscrever-se'}
+                <Button onClick={handleFollow} className={`font-black text-[10px] rounded-2xl h-12 px-6 uppercase italic transition-colors ${isFollowing ? 'bg-secondary border border-white/5 text-slate-400 hover:bg-secondary/80' : 'btn-gold'}`}>
+                  <Bell size={16} className="mr-2" /> {isFollowing ? 'Seguindo' : 'Seguir'}
                 </Button>
-                <Button onClick={() => setShowGiftShop(true)} className="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 font-black text-[10px] rounded-2xl h-12 px-6 uppercase italic">
-                  <Gift size={16} className="mr-2" /> Enviar Presente
+                <Button onClick={() => setShowSubscriptionModal(true)} className={`font-black text-[10px] rounded-2xl h-12 px-6 uppercase italic transition-colors ${isSubscribed ? 'bg-fuchsia-600 hover:bg-fuchsia-700 text-white' : 'bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20'}`}>
+                  <Crown size={16} className="mr-2" /> {isSubscribed ? 'Membro Elite' : 'Inscrever-se'}
                 </Button>
               </div>
             </div>
@@ -371,7 +382,12 @@ export default function WatchStream() {
              ))}
           </div>
           <form onSubmit={handleSendMessage} className="p-6 bg-black border-t border-white/5 flex gap-3">
-            <Input placeholder="Diga algo VIP..." className="bg-secondary border-white/5 text-xs h-12 rounded-xl" />
+            <Input 
+              placeholder="Diga algo VIP (@menção, :emoji:)" 
+              className="bg-secondary border-white/5 text-xs h-12 rounded-xl" 
+              value={chatMessage}
+              onChange={(e) => setChatMessage(e.target.value)}
+            />
             <Button size="icon" className="btn-gold h-12 w-12 rounded-xl shrink-0"><Send size={18}/></Button>
             <Button type="button" size="icon" variant="secondary" className="h-12 w-12 rounded-xl shrink-0" onClick={handleSimulateVoiceMessage}>
               <Mic size={18} className="text-red-500" />
