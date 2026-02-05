@@ -20,6 +20,13 @@ import { ScheduleManager } from '../components/stream/ScheduleManager';
 import { EmoteManager } from '../components/stream/EmoteManager';
 import { ModPanel } from '../components/stream/ModPanel';
 import { ActivityFeed } from '../components/stream/ActivityFeed';
+import { GoLiveWizard } from '../components/stream/GoLiveWizard';
+import { RaidManager } from '../components/stream/RaidManager';
+import { SponsorManager } from '../components/stream/SponsorManager';
+import { TTSConfig } from '../components/stream/TTSConfig';
+import { StreamHealthOverlay } from '../components/stream/StreamHealthOverlay';
+import { ReferralDashboard } from '../components/stream/ReferralDashboard';
+import { NotificationCenter } from '../components/layout/NotificationCenter';
 
 const GAME_CATEGORIES = [
   "Games", "CS2", "Valorant", "Free Fire", "League of Legends", "Just Chatting", "Música", "Tecnologia"
@@ -99,23 +106,35 @@ export default function Dashboard() {
       <header className="border-b border-white/5 bg-black/60 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <Link to="/"><BrandLogo size={24} textSize="text-xl" /></Link>
-          <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-[0.3em] italic">
-            <LayoutDashboard size={14} /> Studio Pro Console
+          <div className="flex items-center gap-4">
+            <StreamHealthOverlay />
+            <NotificationCenter />
+            <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-[0.3em] italic hidden md:flex">
+              <LayoutDashboard size={14} /> Studio Pro Console
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="max-w-7xl mx-auto px-4 py-10 pb-24 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Coluna Principal - Gerenciamento e Analytics */}
         <div className="lg:col-span-2 space-y-8">
           
           {/* Gerenciamento de Transmissão (Título, Jogo, Tags) */}
-          <section className="bg-secondary/30 border border-white/5 rounded-[2.5rem] p-8">
-            <div className="flex items-center gap-2 mb-6">
-              <Settings className="text-primary" size={20} />
-              <h2 className="text-xl uppercase font-black italic">Gerenciamento de Live</h2>
+          <section className="bg-secondary/30 border border-white/5 rounded-[2.5rem] p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+               <Video size={120} />
             </div>
+
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8 relative z-10">
+               <div className="flex items-center gap-2">
+                  <Settings className="text-primary" size={20} />
+                  <h2 className="text-xl uppercase font-black italic">Gerenciamento de Live</h2>
+               </div>
+               <GoLiveWizard />
+            </div>
+
             <div className="space-y-4">
               <div>
                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Título da Transmissão</label>
@@ -159,9 +178,19 @@ export default function Dashboard() {
             <GoalConfig />
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <RaidManager />
+             <div className="space-y-6">
+                <SponsorManager />
+                <TTSConfig />
+             </div>
+          </div>
+
           <ScheduleManager />
 
           <EmoteManager />
+
+          <ReferralDashboard />
 
           {/* Monetização PIX */}
           <section className="bg-secondary/30 border border-white/5 rounded-[2.5rem] p-8">

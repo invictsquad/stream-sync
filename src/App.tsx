@@ -8,7 +8,10 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import WatchStream from "./pages/WatchStream";
 import ChatOverlay from "./pages/ChatOverlay";
+import Categories from "./pages/Categories";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import { MobileNav } from "./components/layout/MobileNav";
 
 const queryClient = new QueryClient();
 
@@ -23,9 +26,12 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/watch/:id" element={<WatchStream />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/overlay/chat/:id" element={<ChatOverlay />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <MobileNav />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

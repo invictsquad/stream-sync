@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { 
   Users, Heart, Share2, MessageSquare, Send, Bell, ThumbsUp, 
   DollarSign, X, Gem, Gift, Star, Crown, Trophy, Sparkles, LucideIcon, Mic,
-  Zap, Settings, Volume2, Maximize, Minimize, Clock, TrendingUp, Check
+  Zap, Settings, Volume2, Maximize, Minimize, Clock, TrendingUp, Check,
+  PictureInPicture
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,9 @@ import { LeaderboardWidget } from '../components/stream/LeaderboardWidget';
 import { ClipsGallery } from '../components/stream/ClipsGallery';
 import { VodList } from '../components/stream/VodList';
 import { RewardsShop } from '../components/stream/RewardsShop';
+import { SocialShare } from '../components/stream/SocialShare';
+import { PlayerSettings } from '../components/stream/PlayerSettings';
+import { ChatSettings } from '../components/stream/ChatSettings';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const MOCK_LIVES = [
@@ -104,6 +108,7 @@ export default function WatchStream() {
   const [activeGiftAlert, setActiveGiftAlert] = useState<{ name: string, icon: LucideIcon } | null>(null);
   const [isFollowing, setIsFollowing] = useState(stream.isFollowing);
   const [isSubscribed, setIsSubscribed] = useState(stream.isSubscribed);
+  const [isTheaterMode, setIsTheaterMode] = useState(false);
 
   useEffect(() => {
     const savedBalance = localStorage.getItem('clutch_diamonds');
@@ -335,55 +340,56 @@ export default function WatchStream() {
             <div className="absolute bottom-0 inset-x-0 h-12 bg-black/50 backdrop-blur-sm flex items-center justify-between px-4">
                 <div className="flex items-center gap-4">
                     <Volume2 size={20} className="text-slate-400 hover:text-primary cursor-pointer" />
-                    <div className="w-20 h-1 bg-slate-700 rounded-full relative">
+                    <div className="w-20 h-1 bg-slate-700 rounded-full relative hidden sm:block">
                         <div className="absolute inset-y-0 left-0 w-1/2 bg-primary rounded-full" />
                     </div>
                     <span className="text-[10px] text-green-400 font-bold flex items-center gap-1">
-                        <Clock size={12} /> Latência: <span className="font-mono">1.8s</span>
+                        <Clock size={12} /> <span className="hidden sm:inline">Latência:</span> <span className="font-mono">1.8s</span>
                     </span>
                 </div>
                 <div className="flex items-center gap-4">
-                    <Settings size={20} className="text-slate-400 hover:text-primary cursor-pointer" />
-                    <Maximize size={20} className="text-slate-400 hover:text-primary cursor-pointer" />
+                    <PictureInPicture size={20} className="text-slate-400 hover:text-primary cursor-pointer hidden md:block" onClick={() => toast.info("Modo PiP Ativado")} />
+                    <PlayerSettings />
+                    <Maximize size={20} className="text-slate-400 hover:text-primary cursor-pointer" onClick={() => setIsTheaterMode(!isTheaterMode)} />
                 </div>
             </div>
           </div>
 
-          <div className="p-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-8">
-              <div className="flex gap-6">
-                <div className="w-16 h-16 rounded-[1.25rem] border-2 border-primary/40 p-0.5"><img src={stream.avatar} className="w-full h-full rounded-[1.1rem] object-cover" alt="" /></div>
+          <div className="p-4 md:p-8 pb-24">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+              <div className="flex gap-4 md:gap-6">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-[1.25rem] border-2 border-primary/40 p-0.5 shrink-0"><img src={stream.avatar} className="w-full h-full rounded-[1.1rem] object-cover" alt="" /></div>
                 <div>
-                  <h1 className="text-2xl font-black italic uppercase tracking-tighter mb-2">{stream.title}</h1>
+                  <h1 className="text-xl md:text-2xl font-black italic uppercase tracking-tighter mb-1 md:mb-2 line-clamp-1">{stream.title}</h1>
                   <div className="flex items-center gap-3">
-                    <p className="text-primary font-black text-xs uppercase italic tracking-widest">{stream.streamer}</p>
+                    <p className="text-primary font-black text-[10px] md:text-xs uppercase italic tracking-widest">{stream.streamer}</p>
                     <span className="w-1 h-1 bg-slate-800 rounded-full" />
-                    <p className="text-slate-500 text-xs font-black uppercase italic tracking-tighter">{stream.category}</p>
+                    <p className="text-slate-500 text-[10px] md:text-xs font-black uppercase italic tracking-tighter">{stream.category}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <Button onClick={handleFollow} className={`font-black text-[10px] rounded-2xl h-12 px-6 uppercase italic transition-colors ${isFollowing ? 'bg-secondary border border-white/5 text-slate-400 hover:bg-secondary/80' : 'btn-gold'}`}>
+              <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
+                <Button onClick={handleFollow} className={`flex-1 md:flex-none font-black text-[10px] rounded-2xl h-10 md:h-12 px-6 uppercase italic transition-colors ${isFollowing ? 'bg-secondary border border-white/5 text-slate-400 hover:bg-secondary/80' : 'btn-gold'}`}>
                   <Bell size={16} className="mr-2" /> {isFollowing ? 'Seguindo' : 'Seguir'}
                 </Button>
-                <Button onClick={() => setShowSubscriptionModal(true)} className={`font-black text-[10px] rounded-2xl h-12 px-6 uppercase italic transition-colors ${isSubscribed ? 'bg-fuchsia-600 hover:bg-fuchsia-700 text-white' : 'bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20'}`}>
-                  <Crown size={16} className="mr-2" /> {isSubscribed ? 'Membro Elite' : 'Inscrever-se'}
+                <Button onClick={() => setShowSubscriptionModal(true)} className={`flex-1 md:flex-none font-black text-[10px] rounded-2xl h-10 md:h-12 px-6 uppercase italic transition-colors ${isSubscribed ? 'bg-fuchsia-600 hover:bg-fuchsia-700 text-white' : 'bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20'}`}>
+                  <Crown size={16} className="mr-2" /> {isSubscribed ? 'Elite' : 'Inscrever'}
                 </Button>
               </div>
             </div>
 
-            <div className="flex items-center gap-8 py-6 border-y border-white/5">
-               <div className="flex items-center gap-2 text-primary font-black text-sm italic">
+            <div className="flex items-center gap-4 md:gap-8 py-4 md:py-6 border-y border-white/5 overflow-x-auto scrollbar-hide">
+               <div className="flex items-center gap-2 text-primary font-black text-sm italic whitespace-nowrap">
                  <Users size={18} /> {stream.viewers}
                </div>
-               <button onClick={() => { setLikes(likes+1); setHasLiked(true); }} className={`flex items-center gap-2 text-xs font-black transition-all uppercase italic ${hasLiked ? 'text-primary scale-110' : 'text-slate-500 hover:text-primary'}`}>
+               <button onClick={() => { setLikes(likes+1); setHasLiked(true); }} className={`flex items-center gap-2 text-xs font-black transition-all uppercase italic whitespace-nowrap ${hasLiked ? 'text-primary scale-110' : 'text-slate-500 hover:text-primary'}`}>
                  <ThumbsUp size={18} fill={hasLiked ? "currentColor" : "none"} /> {likes.toLocaleString()}
                </button>
-               <button onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success("Link copiado!"); }} className="flex items-center gap-2 text-slate-500 text-xs font-black hover:text-primary transition-all uppercase italic">
-                 <Share2 size={18} /> Compartilhar
-               </button>
-               <Button variant="ghost" size="sm" className="text-slate-500 hover:text-primary text-xs font-black uppercase italic">
+
+               <SocialShare url={window.location.href} title={stream.title} />
+
+               <Button variant="ghost" size="sm" className="text-slate-500 hover:text-primary text-xs font-black uppercase italic whitespace-nowrap">
                  <Clock size={16} className="mr-2" /> Criar Clip
                </Button>
             </div>
@@ -429,19 +435,23 @@ export default function WatchStream() {
         </div>
 
         {/* Chat - Estilo Premium com Mensagens de Presente */}
-        <div className="w-full lg:w-80 xl:w-96 border-l border-white/5 flex flex-col bg-black/40">
-          <div className="p-6 border-b border-white/5 flex items-center justify-between">
+        {/* Mobile: Hidden in theater mode or stacked below on small screens if not overlaid */}
+        <div className={`w-full lg:w-80 xl:w-96 border-l border-white/5 flex flex-col bg-black/40 ${isTheaterMode ? 'hidden' : 'block'}`}>
+          <div className="p-4 md:p-6 border-b border-white/5 flex items-center justify-between">
             <h2 className="text-[10px] text-primary flex items-center gap-2 font-black italic uppercase tracking-widest">
               <MessageSquare size={14}/> Diamond Chat
             </h2>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setShowRewardsShop(true)}
-              className="h-7 px-2 text-[9px] font-black uppercase text-emerald-400 bg-emerald-400/10 hover:bg-emerald-400 hover:text-black rounded-lg transition-colors"
-            >
-              <Sparkles size={10} className="mr-1" /> {channelPoints} Pts
-            </Button>
+            <div className="flex items-center gap-1">
+               <ChatSettings />
+               <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setShowRewardsShop(true)}
+                  className="h-7 px-2 text-[9px] font-black uppercase text-emerald-400 bg-emerald-400/10 hover:bg-emerald-400 hover:text-black rounded-lg transition-colors"
+               >
+                  <Sparkles size={10} className="mr-1" /> {channelPoints} Pts
+               </Button>
+            </div>
           </div>
 
           <div className="px-6 pt-4">
