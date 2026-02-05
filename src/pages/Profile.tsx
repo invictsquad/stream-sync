@@ -1,5 +1,5 @@
 import React from 'react';
-import { Twitter, Instagram, Youtube, MapPin, Link as LinkIcon, Edit3 } from 'lucide-react';
+import { Twitter, Instagram, Youtube, MapPin, Link as LinkIcon, Edit3, Trophy } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { BrandLogo } from '../components/BrandLogo';
 import { Link } from 'react-router-dom';
@@ -85,5 +85,3 @@ export default function Profile() {
     </div>
   );
 }
-
-import { Trophy } from 'lucide-react';

@@ -35,6 +35,22 @@
 
     --gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #B8860B 100%);
   }
+
+  html, body {
+    height: 100%;
+    overflow: hidden; /* Prevent global scroll, handle in App shell */
+    touch-action: manipulation; /* Prevent accidental zooming */
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 }
 
 @layer components {
