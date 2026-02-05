@@ -27,6 +27,10 @@ import { TTSConfig } from '../components/stream/TTSConfig';
 import { StreamHealthOverlay } from '../components/stream/StreamHealthOverlay';
 import { ReferralDashboard } from '../components/stream/ReferralDashboard';
 import { NotificationCenter } from '../components/layout/NotificationCenter';
+import { StreamKeyManager } from '../components/stream/StreamKeyManager';
+import { TagManager } from '../components/stream/TagManager';
+import { OfflineScreenConfig } from '../components/stream/OfflineScreenConfig';
+import { NotificationSettings } from '../components/stream/NotificationSettings';
 
 const GAME_CATEGORIES = [
   "Games", "CS2", "Valorant", "Free Fire", "League of Legends", "Just Chatting", "Música", "Tecnologia"
@@ -61,34 +65,15 @@ export default function Dashboard() {
   const [moderators, setModerators] = useState(['ClutchBot', 'Admin_Elite']);
   const [selectedCategory, setSelectedCategory] = useState(GAME_CATEGORIES[0]);
   const [streamTitle, setStreamTitle] = useState("Minha Live de Elite - Título Padrão");
-  const [streamTags, setStreamTags] = useState("games, pro, diamond");
   const [slowMode, setSlowMode] = useState(false);
   const [bannedWords, setBannedWords] = useState("palavrão, spam, link");
   const [alertApiUrl, setAlertApiUrl] = useState("https://alerts.clutch.live/api/user/JD123");
-
-  const chatOverlayUrl = `${window.location.origin}/overlay/chat/diamond-user`;
 
   const copyToClipboard = async (text: string, label: string) => {
     await navigator.clipboard.writeText(text);
     toast.success(`${label} copiado!`, {
       style: { background: '#0a0a0a', color: '#FFD700', border: '1px solid #FFD700' }
     });
-  };
-
-  const handleAddModerator = () => {
-    if (!newModName.trim()) return;
-    if (moderators.includes(newModName)) {
-      toast.error("Usuário já é moderador.");
-      return;
-    }
-    setModerators([...moderators, newModName]);
-    setNewModName("");
-    toast.success(`${newModName} agora é um moderador diamond!`);
-  };
-
-  const handleRemoveMod = (name: string) => {
-    setModerators(moderators.filter(m => m !== name));
-    toast.info("Moderador removido.");
   };
 
   const handleUpdateStreamInfo = () => {
@@ -144,15 +129,9 @@ export default function Dashboard() {
                   className="bg-background border-white/10 h-12 rounded-xl text-sm focus:border-primary"
                 />
               </div>
-              <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Tags (Separadas por vírgula)</label>
-                <Input 
-                  value={streamTags}
-                  onChange={(e) => setStreamTags(e.target.value)}
-                  placeholder="ex: cs2, ranked, pro, diamond"
-                  className="bg-background border-white/10 h-12 rounded-xl text-sm focus:border-primary"
-                />
-              </div>
+
+              <TagManager />
+
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Categoria/Jogo</label>
@@ -172,10 +151,15 @@ export default function Dashboard() {
             </div>
           </section>
 
-          {/* Componente de Enquetes (Novo) */}
+          {/* Offline Screen & Polls */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <OfflineScreenConfig />
             <PollCreator />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <GoalConfig />
+            <NotificationSettings />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -209,7 +193,14 @@ export default function Dashboard() {
 
           {/* Analytics - KPIs */}
           <section className="space-y-6">
-            <h2 className="text-xl uppercase font-black italic flex items-center gap-2"><BarChart3 className="text-primary" /> Analytics Diamond</h2>
+            <div className="flex items-center justify-between">
+               <h2 className="text-xl uppercase font-black italic flex items-center gap-2"><BarChart3 className="text-primary" /> Analytics Diamond</h2>
+               <Link to="/dashboard/analytics">
+                  <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary hover:text-black font-black uppercase italic text-xs">
+                     Ver Relatório Completo
+                  </Button>
+               </Link>
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {KPIS.map((kpi, index) => (
                 <Card key={index} className="bg-secondary border border-white/5 rounded-2xl p-4 shadow-xl">
@@ -283,27 +274,7 @@ export default function Dashboard() {
           
           <ActivityFeed />
 
-          {/* Configurações OBS */}
-          <section className="bg-secondary/30 border border-white/5 rounded-[2.5rem] p-8 space-y-6">
-            <h2 className="text-sm text-primary uppercase font-black italic">Configurações OBS</h2>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Ingest URL</label>
-                <div className="flex gap-2">
-                  <Input readOnly value={INGEST_BASE_URL} className="bg-background border-white/5 h-12 text-[10px] font-mono" />
-                  <Button size="icon" variant="secondary" className="h-12 w-12 rounded-xl" onClick={() => copyToClipboard(INGEST_BASE_URL, "URL")}><Copy size={16} /></Button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Stream Key</label>
-                <div className="flex gap-2">
-                  <Input type={showKey ? "text" : "password"} readOnly value={streamKey} className="bg-background border-white/5 h-12 text-[10px] font-mono" />
-                  <Button size="icon" variant="ghost" onClick={() => setShowKey(!showKey)}>{showKey ? <EyeOff size={16} /> : <Eye size={16} />}</Button>
-                  <Button size="icon" variant="secondary" className="h-12 w-12 rounded-xl" onClick={() => copyToClipboard(streamKey, "Chave")}><Copy size={16} /></Button>
-                </div>
-              </div>
-            </div>
-          </section>
+          <StreamKeyManager />
 
           {/* Alertas Integrados */}
           <section className="bg-primary/5 border border-primary/20 rounded-[2.5rem] p-8 space-y-6">

@@ -1,83 +1,78 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, ArrowRight, Github, Chrome } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { BrandLogo } from '../components/BrandLogo';
-import { toast } from "sonner";
+import React from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Zap } from 'lucide-react';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [loading, setLoading] = React.useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      toast.success("Acesso liberado ao Clutch Diamond Room.");
-      navigate('/dashboard');
-    } else {
-      toast.error("Credenciais inválidas.");
-    }
+    setLoading(true);
+    // Simulate network request
+    setTimeout(() => {
+      login();
+      setLoading(false);
+    }, 800);
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans">
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-      
-      <div className="w-full max-w-md space-y-10 relative z-10">
-        <div className="text-center">
-          <Link to="/" className="inline-block">
-            <BrandLogo size={48} textSize="text-4xl" className="flex-col" />
-          </Link>
-          <p className="text-slate-500 mt-4 text-xs font-bold uppercase tracking-[0.3em]">Ambiente de Transmissão Diamond</p>
-        </div>
-
-        <div className="bg-secondary/50 border border-white/5 backdrop-blur-xl rounded-3xl p-8 shadow-2xl">
-          <form onSubmit={handleLogin} className="space-y-6">
+    <div className="h-dvh w-full bg-black flex items-center justify-center p-4">
+      <Card className="w-full max-w-md bg-zinc-900 border-zinc-800">
+        <CardHeader className="text-center space-y-4">
+          <div className="mx-auto bg-yellow-500 w-12 h-12 rounded-full flex items-center justify-center">
+            <Zap className="h-6 w-6 text-black fill-black" />
+          </div>
+          <div className="space-y-1">
+            <CardTitle className="text-2xl font-black italic uppercase text-white tracking-tighter">
+              Clutch Live
+            </CardTitle>
+            <CardDescription className="text-zinc-400">
+              Entre para começar a assistir e transmitir
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <form onSubmit={handleLogin}>
+          <CardContent className="space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">E-mail de Elite</label>
+              <Label htmlFor="email" className="text-zinc-300">Email</Label>
               <Input 
+                id="email"
                 type="email" 
-                placeholder="vip@clutch.live" 
-                className="bg-background border-white/5 h-12 text-white"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                defaultValue="test@stream.com"
+                className="bg-black/50 border-zinc-700 text-white"
+                readOnly
               />
             </div>
-
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Senha Premium</label>
+              <Label htmlFor="password" className="text-zinc-300">Senha</Label>
               <Input 
+                id="password"
                 type="password" 
-                placeholder="••••••••" 
-                className="bg-background border-white/5 h-12 text-white"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                defaultValue="password123"
+                className="bg-black/50 border-zinc-700 text-white"
+                readOnly
               />
             </div>
-
-            <Button type="submit" className="w-full bg-primary hover:bg-primary-hover h-12 text-black font-black italic rounded-2xl shadow-glow-sm transition-all group uppercase tracking-widest">
-              ENTRAR NA SALA
-              <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
+          </CardContent>
+          <CardFooter>
+            <Button
+              type="submit"
+              className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold uppercase italic py-6 text-lg"
+              disabled={loading}
+            >
+              {loading ? 'Entrando...' : 'Entrar na Plataforma'}
             </Button>
-          </form>
-
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-            <div className="relative flex justify-center text-[10px] uppercase"><span className="bg-slate-950 px-2 text-slate-600 font-bold tracking-widest">Acesso Rápido</span></div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" className="border-white/5 bg-background hover:bg-white/5 h-11 font-bold text-slate-400">
-               Google
-            </Button>
-            <Button variant="outline" className="border-white/5 bg-background hover:bg-white/5 h-11 font-bold text-slate-400">
-               GitHub
-            </Button>
-          </div>
+          </CardFooter>
+        </form>
+        <div className="px-6 pb-6 text-center text-xs text-zinc-500">
+          Acesso de demonstração pré-configurado
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

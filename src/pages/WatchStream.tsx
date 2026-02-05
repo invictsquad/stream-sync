@@ -236,8 +236,8 @@ export default function WatchStream() {
         />
 
         {showPix && (
-          <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-            <div className="bg-secondary border border-primary/30 rounded-[2.5rem] p-10 max-w-sm w-full text-center relative gold-glow">
+          <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+            <div className="bg-secondary border border-primary/30 rounded-[2.5rem] p-10 max-w-sm w-full text-center relative gold-glow animate-in zoom-in-95 duration-300">
               <button onClick={() => setShowPix(false)} className="absolute top-6 right-6 text-slate-500 hover:text-primary transition-colors"><X size={24}/></button>
               <DollarSign size={48} className="text-primary mx-auto mb-6" />
               <h3 className="text-2xl font-black italic mb-4 uppercase">Apoio Direto</h3>
@@ -251,8 +251,8 @@ export default function WatchStream() {
         )}
 
         {showGiftShop && (
-          <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-            <div className="bg-secondary border border-primary/30 rounded-[2.5rem] p-8 max-w-md w-full relative gold-glow">
+          <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+            <div className="bg-secondary border border-primary/30 rounded-[2.5rem] p-8 max-w-md w-full relative gold-glow animate-in zoom-in-95 duration-300">
               <button onClick={() => setShowGiftShop(false)} className="absolute top-6 right-6 text-slate-500 hover:text-primary transition-colors"><X size={24}/></button>
               <div className="flex items-center gap-3 mb-8">
                 <div className="bg-primary/20 p-3 rounded-2xl">
@@ -289,8 +289,8 @@ export default function WatchStream() {
         )}
 
         {showSubscriptionModal && (
-          <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-            <div className="bg-secondary border border-primary/30 rounded-[2.5rem] p-8 max-w-3xl w-full relative gold-glow">
+          <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+            <div className="bg-secondary border border-primary/30 rounded-[2.5rem] p-8 max-w-3xl w-full relative gold-glow animate-in zoom-in-95 duration-300">
               <button onClick={() => setShowSubscriptionModal(false)} className="absolute top-6 right-6 text-slate-500 hover:text-primary transition-colors"><X size={24}/></button>
               <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-8 text-center">
                 Inscreva-se no Canal <span className="gradient-text">{stream.streamer}</span>
@@ -375,6 +375,9 @@ export default function WatchStream() {
                 </Button>
                 <Button onClick={() => setShowSubscriptionModal(true)} className={`flex-1 md:flex-none font-black text-[10px] rounded-2xl h-10 md:h-12 px-6 uppercase italic transition-colors ${isSubscribed ? 'bg-fuchsia-600 hover:bg-fuchsia-700 text-white' : 'bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20'}`}>
                   <Crown size={16} className="mr-2" /> {isSubscribed ? 'Elite' : 'Inscrever'}
+                </Button>
+                <Button onClick={() => setShowPix(true)} className="flex-1 md:flex-none font-black text-[10px] rounded-2xl h-10 md:h-12 px-6 uppercase italic transition-colors bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500/20">
+                   <DollarSign size={16} className="mr-2" /> PIX
                 </Button>
               </div>
             </div>
