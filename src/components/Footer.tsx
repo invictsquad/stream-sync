@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Heart } from "lucide-react";
+import { Globe, Heart, Instagram, Twitter, MessageCircle, Github } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BrandLogo } from './BrandLogo';
 
@@ -29,15 +29,18 @@ const Footer = () => {
           <div>
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-8 italic">Social</h4>
             <div className="flex gap-4">
-              {['instagram', 'x', 'discord', 'github'].map(social => (
-                <a key={social} href="#" className="w-10 h-10 rounded-2xl bg-secondary border border-white/5 flex items-center justify-center hover:border-primary transition-all group">
-                  <img 
-                    src={`https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${social}.svg`} 
-                    className="w-5 h-5 invert group-hover:brightness-50 transition-all" 
-                    alt={social} 
-                  />
-                </a>
-              ))}
+              <a href="#" className="w-10 h-10 rounded-2xl bg-secondary border border-white/5 flex items-center justify-center hover:border-primary transition-all group">
+                 <Instagram size={18} className="text-slate-400 group-hover:text-primary transition-colors" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-2xl bg-secondary border border-white/5 flex items-center justify-center hover:border-primary transition-all group">
+                 <Twitter size={18} className="text-slate-400 group-hover:text-primary transition-colors" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-2xl bg-secondary border border-white/5 flex items-center justify-center hover:border-primary transition-all group">
+                 <MessageCircle size={18} className="text-slate-400 group-hover:text-primary transition-colors" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-2xl bg-secondary border border-white/5 flex items-center justify-center hover:border-primary transition-all group">
+                 <Github size={18} className="text-slate-400 group-hover:text-primary transition-colors" />
+              </a>
             </div>
           </div>
 

@@ -32,7 +32,7 @@ const AuthenticatedApp = () => {
     <BrowserRouter>
       <div className="flex flex-col h-dvh overflow-hidden bg-black text-white">
         {/* Main Content Area - Scrollable */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-0">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/watch/:id" element={<WatchStream />} />

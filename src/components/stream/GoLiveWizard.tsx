@@ -35,6 +35,7 @@ export function GoLiveWizard() {
       <DialogContent className="bg-secondary border border-white/10 sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-black italic uppercase text-primary">Configurar Transmissão</DialogTitle>
+          <div className="sr-only">Wizard para iniciar a live</div>
         </DialogHeader>
 
         <div className="py-4 space-y-6">

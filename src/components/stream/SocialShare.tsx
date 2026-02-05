@@ -32,6 +32,7 @@ export function SocialShare({ url, title }: { url: string, title: string }) {
       <DialogContent className="bg-secondary border border-white/10 sm:max-w-md">
         <DialogHeader>
            <DialogTitle className="text-xl font-black italic uppercase text-white">Compartilhar Stream</DialogTitle>
+           <div className="sr-only">Opções de compartilhamento</div>
         </DialogHeader>
 
         <div className="grid grid-cols-4 gap-4 py-4">
