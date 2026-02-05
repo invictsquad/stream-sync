@@ -10,6 +10,14 @@ import { Input } from "@/components/ui/input";
 import { BrandLogo } from '../components/BrandLogo';
 import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
+import { PollWidget } from '../components/stream/PollWidget';
+import { GoalProgressBar } from '../components/stream/GoalProgressBar';
+import { ScheduleList } from '../components/stream/ScheduleList';
+import { LeaderboardWidget } from '../components/stream/LeaderboardWidget';
+import { ClipsGallery } from '../components/stream/ClipsGallery';
+import { VodList } from '../components/stream/VodList';
+import { RewardsShop } from '../components/stream/RewardsShop';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const MOCK_LIVES = [
   { id: 1, streamer: 'Gaules', title: 'Major de CS2 - Clutch Live Diamond Stream', viewers: '185k', category: 'Games', avatar: 'https://i.pravatar.cc/150?u=gaules', pix: 'gaules@clutch.live', isFollowing: true, isSubscribed: false },
@@ -83,8 +91,10 @@ export default function WatchStream() {
   const [hasLiked, setHasLiked] = useState(false);
   const [showPix, setShowPix] = useState(false);
   const [showGiftShop, setShowGiftShop] = useState(false);
+  const [showRewardsShop, setShowRewardsShop] = useState(false); // Shop de Pontos
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false); // Novo Modal
   const [userBalance, setUserBalance] = useState(1500);
+  const [channelPoints, setChannelPoints] = useState(2500);
   const [chatMessage, setChatMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, user: 'Sistema', text: 'Respeite a comunidade Diamond.', type: 'system', giftIcon: undefined },
@@ -213,6 +223,13 @@ export default function WatchStream() {
         </AnimatePresence>
 
         {/* Modais de Interação (PIX e Shop) */}
+        <RewardsShop
+          isOpen={showRewardsShop}
+          onClose={() => setShowRewardsShop(false)}
+          balance={channelPoints}
+          onRedeem={(cost) => setChannelPoints(prev => prev - cost)}
+        />
+
         {showPix && (
           <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
             <div className="bg-secondary border border-primary/30 rounded-[2.5rem] p-10 max-w-sm w-full text-center relative gold-glow">
@@ -310,6 +327,10 @@ export default function WatchStream() {
             </div>
             <div className="absolute top-6 left-6 bg-primary text-black px-3 py-1 rounded-full font-black text-[10px] uppercase italic tracking-widest gold-glow">Live Elite</div>
             
+            <div className="absolute top-6 right-6 z-10">
+              <GoalProgressBar />
+            </div>
+
             {/* Player Controls (Simulação de Baixa Latência) */}
             <div className="absolute bottom-0 inset-x-0 h-12 bg-black/50 backdrop-blur-sm flex items-center justify-between px-4">
                 <div className="flex items-center gap-4">
@@ -366,16 +387,67 @@ export default function WatchStream() {
                  <Clock size={16} className="mr-2" /> Criar Clip
                </Button>
             </div>
+
+            <div className="mt-8">
+              <Tabs defaultValue="about" className="w-full">
+                <TabsList className="bg-black/40 border border-white/5 p-1 h-12 rounded-xl mb-6">
+                  <TabsTrigger value="about" className="h-10 rounded-lg text-[10px] font-black uppercase italic data-[state=active]:bg-primary data-[state=active]:text-black">Sobre</TabsTrigger>
+                  <TabsTrigger value="schedule" className="h-10 rounded-lg text-[10px] font-black uppercase italic data-[state=active]:bg-primary data-[state=active]:text-black">Agenda</TabsTrigger>
+                  <TabsTrigger value="ranking" className="h-10 rounded-lg text-[10px] font-black uppercase italic data-[state=active]:bg-primary data-[state=active]:text-black">Ranking</TabsTrigger>
+                  <TabsTrigger value="clips" className="h-10 rounded-lg text-[10px] font-black uppercase italic data-[state=active]:bg-primary data-[state=active]:text-black">Clips</TabsTrigger>
+                  <TabsTrigger value="vods" className="h-10 rounded-lg text-[10px] font-black uppercase italic data-[state=active]:bg-primary data-[state=active]:text-black">Videos</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="about" className="space-y-4">
+                  <div className="bg-secondary/30 border border-white/5 p-6 rounded-3xl">
+                    <h3 className="text-lg font-black italic text-white mb-2">Sobre {stream.streamer}</h3>
+                    <p className="text-sm text-slate-400 leading-relaxed">
+                      Bem-vindo à transmissão oficial! Aqui jogamos em alto nível e buscamos sempre o topo do ranking.
+                      Acompanhe as lives diárias e participe do chat. Não esqueça de seguir e se inscrever!
+                    </p>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="schedule">
+                  <ScheduleList />
+                </TabsContent>
+
+                <TabsContent value="ranking">
+                  <LeaderboardWidget />
+                </TabsContent>
+
+                <TabsContent value="clips">
+                  <ClipsGallery />
+                </TabsContent>
+
+                <TabsContent value="vods">
+                  <VodList />
+                </TabsContent>
+              </Tabs>
+            </div>
           </div>
         </div>
 
         {/* Chat - Estilo Premium com Mensagens de Presente */}
         <div className="w-full lg:w-80 xl:w-96 border-l border-white/5 flex flex-col bg-black/40">
-          <div className="p-6 border-b border-white/5">
+          <div className="p-6 border-b border-white/5 flex items-center justify-between">
             <h2 className="text-[10px] text-primary flex items-center gap-2 font-black italic uppercase tracking-widest">
               <MessageSquare size={14}/> Diamond Chat
             </h2>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setShowRewardsShop(true)}
+              className="h-7 px-2 text-[9px] font-black uppercase text-emerald-400 bg-emerald-400/10 hover:bg-emerald-400 hover:text-black rounded-lg transition-colors"
+            >
+              <Sparkles size={10} className="mr-1" /> {channelPoints} Pts
+            </Button>
           </div>
+
+          <div className="px-6 pt-4">
+            <PollWidget />
+          </div>
+
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
              {messages.map((m) => (
                <ChatMessage key={m.id} message={m} />
