@@ -1,42 +1,20 @@
 import { motion } from "framer-motion";
+import { Building2, Cloud, Globe2, Music2, ShoppingCart, Smartphone, Tv2, Zap } from "lucide-react";
 
 const PartnersSection = () => {
+  // Using Lucide Icons to replace external SVGs and fix tracking warnings
   const partners = [
-    {
-      name: "Google",
-      logo: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/google.svg",
-    },
-    {
-      name: "Microsoft",
-      logo: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/microsoft.svg",
-    },
-    {
-      name: "Amazon",
-      logo: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/amazon.svg",
-    },
-    {
-      name: "Meta",
-      logo: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/meta.svg",
-    },
-    {
-      name: "Apple",
-      logo: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/apple.svg",
-    },
-    {
-      name: "Netflix",
-      logo: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/netflix.svg",
-    },
-    {
-      name: "Spotify",
-      logo: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/spotify.svg",
-    },
-    {
-      name: "Tesla",
-      logo: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/tesla.svg",
-    },
+    { name: "Google", icon: Globe2 },
+    { name: "Microsoft", icon: Building2 },
+    { name: "Amazon", icon: ShoppingCart },
+    { name: "Meta", icon: Globe2 },
+    { name: "Apple", icon: Smartphone },
+    { name: "Netflix", icon: Tv2 },
+    { name: "Spotify", icon: Music2 },
+    { name: "Tesla", icon: Zap },
   ];
 
-  // Duplicate for seamless loop - only duplicate once to avoid repeated logos
+  // Duplicate for seamless loop
   const repeatedPartners = [...partners, ...partners];
 
   return (
@@ -64,7 +42,6 @@ const PartnersSection = () => {
 
       {/* Partners Marquee */}
       <div className="relative">
-        {/* Gradient overlays for fade effect */}
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
@@ -72,10 +49,8 @@ const PartnersSection = () => {
           {repeatedPartners.map((partner, index) => (
             <div key={index} className="flex-shrink-0 mx-8 md:mx-12">
               <div className="glass-card px-8 py-6 flex items-center gap-4 hover-glow transition-all duration-300 hover:scale-105 cursor-pointer group min-w-[200px]">
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="h-8 w-auto object-contain group-hover:scale-110 transition-transform duration-300"
+                <partner.icon
+                  className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors duration-300"
                 />
                 <span className="text-lg font-semibold text-foreground/80 group-hover:text-foreground transition-colors">
                   {partner.name}
@@ -86,7 +61,6 @@ const PartnersSection = () => {
         </div>
       </div>
 
-      {/* Stats below */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -96,28 +70,16 @@ const PartnersSection = () => {
       >
         <div className="flex flex-wrap justify-center gap-8 md:gap-16">
           <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold gradient-text">
-              50+
-            </div>
-            <div className="text-muted-foreground text-sm mt-1">
-              Empresas Parceiras
-            </div>
+            <div className="text-3xl md:text-4xl font-bold gradient-text">50+</div>
+            <div className="text-muted-foreground text-sm mt-1">Empresas Parceiras</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold gradient-text">
-              98%
-            </div>
-            <div className="text-muted-foreground text-sm mt-1">
-              Taxa de Satisfação
-            </div>
+            <div className="text-3xl md:text-4xl font-bold gradient-text">98%</div>
+            <div className="text-muted-foreground text-sm mt-1">Taxa de Satisfação</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold gradient-text">
-              5 Anos
-            </div>
-            <div className="text-muted-foreground text-sm mt-1">
-              De Parceria Média
-            </div>
+            <div className="text-3xl md:text-4xl font-bold gradient-text">5 Anos</div>
+            <div className="text-muted-foreground text-sm mt-1">De Parceria Média</div>
           </div>
         </div>
       </motion.div>
