@@ -3,6 +3,7 @@ import { Search, Zap, TrendingUp, Radio, Gamepad2, Mic2, Music, Trophy, SearchIc
 import { Link } from 'react-router-dom';
 import { StreamCard } from '../components/StreamCard';
 import { RankingSection } from '../components/RankingSection';
+import { FeaturedCarousel } from '../components/layout/FeaturedCarousel';
 import Footer from '../components/Footer';
 import { BrandLogo } from '../components/BrandLogo';
 
@@ -64,8 +65,10 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-12 space-y-20">
+      <main className="max-w-7xl mx-auto px-4 py-12 pb-32 space-y-20">
         
+        <FeaturedCarousel />
+
         {/* Category Selector */}
         <section className="flex items-center gap-4 overflow-x-auto pb-4 scrollbar-hide">
           {CATEGORIES.map((cat) => (

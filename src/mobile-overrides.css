@@ -1,0 +1,29 @@
+/* Global Scrollbar Hide */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Safe Area for Mobile */
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Touch Targets */
+button, a {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    button, a {
+        min-height: auto;
+        min-width: auto;
+    }
+}
