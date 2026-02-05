@@ -12,6 +12,11 @@ import { BrandLogo } from '../components/BrandLogo';
 import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
 import { PollWidget } from '../components/stream/PollWidget';
+import { PredictionWidget } from '../components/stream/PredictionWidget';
+import { HypeTrainWidget } from '../components/stream/HypeTrainWidget';
+import { MerchShelf } from '../components/stream/MerchShelf';
+import { MusicOverlay } from '../components/stream/MusicOverlay';
+import { GiveawayWidget } from '../components/stream/GiveawayWidget';
 import { GoalProgressBar } from '../components/stream/GoalProgressBar';
 import { ScheduleList } from '../components/stream/ScheduleList';
 import { LeaderboardWidget } from '../components/stream/LeaderboardWidget';
@@ -325,13 +330,15 @@ export default function WatchStream() {
 
         {/* Player e Controles */}
         <div className="flex-1 overflow-y-auto scrollbar-hide">
-          <div className="aspect-video bg-black relative">
+          <div className="aspect-video bg-black relative group">
             {/* Player Mock */}
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black to-secondary/20">
                <BrandLogo size={60} withText={false} className="opacity-10" />
             </div>
             <div className="absolute top-6 left-6 bg-primary text-black px-3 py-1 rounded-full font-black text-[10px] uppercase italic tracking-widest gold-glow">Live Elite</div>
             
+            <MusicOverlay />
+
             <div className="absolute top-6 right-6 z-10">
               <GoalProgressBar />
             </div>
@@ -398,6 +405,11 @@ export default function WatchStream() {
             </div>
 
             <div className="mt-8">
+               {/* Merch Shelf Integration */}
+               <div className="mb-8">
+                  <MerchShelf />
+               </div>
+
               <Tabs defaultValue="about" className="w-full">
                 <TabsList className="bg-black/40 border border-white/5 p-1 h-12 rounded-xl mb-6">
                   <TabsTrigger value="about" className="h-10 rounded-lg text-[10px] font-black uppercase italic data-[state=active]:bg-primary data-[state=active]:text-black">Sobre</TabsTrigger>
@@ -457,7 +469,10 @@ export default function WatchStream() {
             </div>
           </div>
 
-          <div className="px-6 pt-4">
+          <div className="px-6 pt-4 space-y-2">
+            <HypeTrainWidget />
+            <PredictionWidget />
+            <GiveawayWidget />
             <PollWidget />
           </div>
 
