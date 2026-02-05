@@ -44,6 +44,7 @@ const AuthenticatedApp = () => {
             <Route path="/categories" element={<Categories />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/overlay/chat/:id" element={<ChatOverlay />} />
+            <Route path="/login" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

@@ -5,6 +5,10 @@ import { WebStreamDeck } from '@/components/stream/tools/WebStreamDeck';
 import { Whispers } from '@/components/stream/tools/Whispers';
 import { GuestStar } from '@/components/stream/tools/GuestStar';
 import { ClipsTrimmer } from '@/components/stream/tools/ClipsTrimmer';
+import { OverlayManager } from '@/components/stream/tools/OverlayManager';
+import { SubathonTimer } from '@/components/stream/tools/SubathonTimer';
+import { DonationTicker } from '@/components/stream/tools/DonationTicker';
+import { PinnedMessageManager } from '@/components/stream/tools/PinnedMessageManager';
 
 export default function Tools() {
   return (
@@ -24,6 +28,15 @@ export default function Tools() {
           <GuestStar />
           <div className="lg:col-span-2">
              <ClipsTrimmer />
+          </div>
+
+          {/* Linha 3 (Novas Features) */}
+          <OverlayManager />
+          <SubathonTimer />
+          <PinnedMessageManager />
+
+          <div className="lg:col-span-3">
+             <DonationTicker />
           </div>
        </div>
     </div>

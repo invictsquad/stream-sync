@@ -5,6 +5,7 @@ import { BannedUsers } from '@/components/stream/community/BannedUsers';
 import { AutoHostConfig } from '@/components/stream/community/AutoHostConfig';
 import { CommunityRules } from '@/components/stream/community/CommunityRules';
 import { ChatBotManager } from '@/components/stream/community/ChatBotManager';
+import { AutoModConfig } from '@/components/stream/community/AutoModConfig';
 
 export default function Community() {
   return (
@@ -22,6 +23,7 @@ export default function Community() {
                 <BannedUsers />
              </div>
              <CommunityRules />
+             <AutoModConfig />
           </div>
 
           {/* Coluna 2: Ferramentas */}
