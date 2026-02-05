@@ -14,6 +14,12 @@ import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PollCreator } from '../components/stream/PollCreator';
+import { GoalConfig } from '../components/stream/GoalConfig';
+import { ScheduleManager } from '../components/stream/ScheduleManager';
+import { EmoteManager } from '../components/stream/EmoteManager';
+import { ModPanel } from '../components/stream/ModPanel';
+import { ActivityFeed } from '../components/stream/ActivityFeed';
 
 const GAME_CATEGORIES = [
   "Games", "CS2", "Valorant", "Free Fire", "League of Legends", "Just Chatting", "Música", "Tecnologia"
@@ -147,6 +153,16 @@ export default function Dashboard() {
             </div>
           </section>
 
+          {/* Componente de Enquetes (Novo) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <PollCreator />
+            <GoalConfig />
+          </div>
+
+          <ScheduleManager />
+
+          <EmoteManager />
+
           {/* Monetização PIX */}
           <section className="bg-secondary/30 border border-white/5 rounded-[2.5rem] p-8">
             <h2 className="text-xl mb-6 flex items-center gap-2 uppercase font-black italic"><Wallet className="text-primary" /> Receber Apoio (PIX)</h2>
@@ -228,11 +244,16 @@ export default function Dashboard() {
               </div>
             </div>
           </section>
+
+          {/* Painel Avançado de Moderação */}
+          <ModPanel />
         </div>
 
         {/* Barra Lateral - Configurações OBS e Monetização */}
         <div className="space-y-8">
           
+          <ActivityFeed />
+
           {/* Configurações OBS */}
           <section className="bg-secondary/30 border border-white/5 rounded-[2.5rem] p-8 space-y-6">
             <h2 className="text-sm text-primary uppercase font-black italic">Configurações OBS</h2>
