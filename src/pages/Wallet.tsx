@@ -6,7 +6,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const TRANSACTIONS = [
   { id: 1, type: 'deposit', amount: 500, date: 'Hoje, 14:30', method: 'PIX', status: 'Concluído' },

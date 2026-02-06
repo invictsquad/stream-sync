@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Compass, Video, History, User, LogOut, Settings, Wallet, ChevronLeft, ChevronRight, Gamepad2, Mic2 } from 'lucide-react';
+import { Home, Compass, Video, History, User, LogOut, Settings, Wallet, ChevronLeft, ChevronRight, LayoutDashboard, BarChart3, DollarSign, Trophy, Radio, Scissors, Smile, Calendar, Zap, Briefcase, Plug, Code, MessageSquare, Share2, Users, Heart, Package, ShoppingBag, Music2, Flame, ShieldAlert, Info, FileText, MessageSquarePlus } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -11,8 +11,44 @@ import { BrandLogo } from '../BrandLogo';
 
 const NAV_ITEMS = [
   { label: 'Home', icon: Home, path: '/' },
+  { label: 'Descobrir', icon: Flame, path: '/discover' },
   { label: 'Navegar', icon: Compass, path: '/categories' },
-  { label: 'Histórico', icon: History, path: '/history' },
+  { label: 'Inscrições', icon: Heart, path: '/subscriptions' },
+  { label: 'Inventário', icon: Package, path: '/inventory' },
+  { label: 'Rankings', icon: Trophy, path: '/leaderboards' },
+  { label: 'Loja', icon: ShoppingBag, path: '/merch' },
+];
+
+const CREATOR_ITEMS = [
+  { label: 'Visão Geral', icon: LayoutDashboard, path: '/dashboard/overview' },
+  { label: 'Gerenciador', icon: Radio, path: '/dashboard/stream-manager' },
+  { label: 'Analytics', icon: BarChart3, path: '/dashboard/analytics' },
+  { label: 'Monetização', icon: DollarSign, path: '/dashboard/earnings' },
+  { label: 'Conquistas', icon: Trophy, path: '/dashboard/achievements' },
+];
+
+const CONTENT_ITEMS = [
+  { label: 'Clipes', icon: Scissors, path: '/dashboard/clips' },
+  { label: 'Emotes', icon: Smile, path: '/dashboard/emotes' },
+  { label: 'Agenda', icon: Calendar, path: '/dashboard/schedule' },
+  { label: 'Interações', icon: Zap, path: '/dashboard/interactions' },
+  { label: 'Patrocinadores', icon: Briefcase, path: '/dashboard/sponsors' },
+];
+
+const TOOLS_ITEMS = [
+  { label: 'AutoMod', icon: ShieldAlert, path: '/dashboard/automod' },
+  { label: 'Música', icon: Music2, path: '/dashboard/music' },
+  { label: 'Chat', icon: MessageSquare, path: '/dashboard/chat-settings' },
+  { label: 'Integrações', icon: Plug, path: '/dashboard/integrations' },
+  { label: 'API / Dev', icon: Code, path: '/dashboard/developers' },
+  { label: 'Indicações', icon: Share2, path: '/dashboard/referrals' },
+  { label: 'Equipes', icon: Users, path: '/dashboard/teams' },
+];
+
+const RESOURCE_ITEMS = [
+  { label: 'Sobre', icon: Info, path: '/about' },
+  { label: 'Imprensa', icon: FileText, path: '/press' },
+  { label: 'Feedback', icon: MessageSquarePlus, path: '/feedback' },
 ];
 
 const FOLLOWING = [
@@ -66,6 +102,125 @@ export function Sidebar() {
                 )
              })}
           </nav>
+
+          <div className="my-6 border-t border-white/5" />
+
+          {/* Creator Tools */}
+          <div className="px-3 mb-6">
+             {!collapsed && <h3 className="px-4 text-[10px] font-black uppercase text-primary mb-2 tracking-widest">Estúdio</h3>}
+             <div className="space-y-1">
+             {CREATOR_ITEMS.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Tooltip key={item.path} delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <NavLink to={item.path}>
+                        <Button
+                          variant={isActive ? "secondary" : "ghost"}
+                          className={cn(
+                            "w-full justify-start gap-4 mb-1 font-bold",
+                            collapsed ? "px-0 justify-center" : "px-4",
+                            isActive && "bg-secondary text-primary"
+                          )}
+                        >
+                           <item.icon size={20} className={cn(isActive && "fill-current")} />
+                           {!collapsed && <span className="uppercase text-xs tracking-wide">{item.label}</span>}
+                        </Button>
+                      </NavLink>
+                    </TooltipTrigger>
+                    {collapsed && <TooltipContent side="right" className="font-bold uppercase text-xs">{item.label}</TooltipContent>}
+                  </Tooltip>
+                )
+             })}
+             </div>
+          </div>
+
+          <div className="px-3 mb-6">
+             {!collapsed && <h3 className="px-4 text-[10px] font-black uppercase text-primary mb-2 tracking-widest">Conteúdo</h3>}
+             <div className="space-y-1">
+             {CONTENT_ITEMS.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Tooltip key={item.path} delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <NavLink to={item.path}>
+                        <Button
+                          variant={isActive ? "secondary" : "ghost"}
+                          className={cn(
+                            "w-full justify-start gap-4 mb-1 font-bold",
+                            collapsed ? "px-0 justify-center" : "px-4",
+                            isActive && "bg-secondary text-primary"
+                          )}
+                        >
+                           <item.icon size={20} className={cn(isActive && "fill-current")} />
+                           {!collapsed && <span className="uppercase text-xs tracking-wide">{item.label}</span>}
+                        </Button>
+                      </NavLink>
+                    </TooltipTrigger>
+                    {collapsed && <TooltipContent side="right" className="font-bold uppercase text-xs">{item.label}</TooltipContent>}
+                  </Tooltip>
+                )
+             })}
+             </div>
+          </div>
+
+          <div className="px-3 mb-6">
+             {!collapsed && <h3 className="px-4 text-[10px] font-black uppercase text-primary mb-2 tracking-widest">Ferramentas</h3>}
+             <div className="space-y-1">
+             {TOOLS_ITEMS.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Tooltip key={item.path} delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <NavLink to={item.path}>
+                        <Button
+                          variant={isActive ? "secondary" : "ghost"}
+                          className={cn(
+                            "w-full justify-start gap-4 mb-1 font-bold",
+                            collapsed ? "px-0 justify-center" : "px-4",
+                            isActive && "bg-secondary text-primary"
+                          )}
+                        >
+                           <item.icon size={20} className={cn(isActive && "fill-current")} />
+                           {!collapsed && <span className="uppercase text-xs tracking-wide">{item.label}</span>}
+                        </Button>
+                      </NavLink>
+                    </TooltipTrigger>
+                    {collapsed && <TooltipContent side="right" className="font-bold uppercase text-xs">{item.label}</TooltipContent>}
+                  </Tooltip>
+                )
+             })}
+             </div>
+          </div>
+
+          <div className="px-3 mb-6">
+             {!collapsed && <h3 className="px-4 text-[10px] font-black uppercase text-primary mb-2 tracking-widest">Recursos</h3>}
+             <div className="space-y-1">
+             {RESOURCE_ITEMS.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Tooltip key={item.path} delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <NavLink to={item.path}>
+                        <Button
+                          variant={isActive ? "secondary" : "ghost"}
+                          className={cn(
+                            "w-full justify-start gap-4 mb-1 font-bold",
+                            collapsed ? "px-0 justify-center" : "px-4",
+                            isActive && "bg-secondary text-primary"
+                          )}
+                        >
+                           <item.icon size={20} className={cn(isActive && "fill-current")} />
+                           {!collapsed && <span className="uppercase text-xs tracking-wide">{item.label}</span>}
+                        </Button>
+                      </NavLink>
+                    </TooltipTrigger>
+                    {collapsed && <TooltipContent side="right" className="font-bold uppercase text-xs">{item.label}</TooltipContent>}
+                  </Tooltip>
+                )
+             })}
+             </div>
+          </div>
 
           <div className="my-6 border-t border-white/5" />
 

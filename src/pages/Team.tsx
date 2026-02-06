@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Trophy, Target, Shield } from 'lucide-react';
+import { Users, Trophy, Target, Shield, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BrandLogo } from '../components/BrandLogo';
@@ -73,5 +73,3 @@ export default function Team() {
     </div>
   );
 }
-
-import { Clock } from 'lucide-react';
