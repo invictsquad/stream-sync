@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,10 +7,33 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Radio, Mic, Video, Settings, Save, Lock, Eye, EyeOff, Copy } from 'lucide-react';
 import { toast } from 'sonner';
+import { storage } from '@/lib/storage';
 
 export default function StreamManager() {
   const [streamKey, setStreamKey] = useState("live_key_sakjdh12893712893");
   const [showKey, setShowKey] = useState(false);
+
+  // Storage State
+  const [title, setTitle] = useState("");
+  const [notification, setNotification] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    // Load from storage on mount
+    const settings = storage.stream.get();
+    setTitle(settings.title);
+    setNotification(settings.notification);
+  }, []);
+
+  const handleSave = () => {
+    setIsSaving(true);
+    storage.stream.save({ title, notification });
+
+    setTimeout(() => {
+        setIsSaving(false);
+        toast.success("Configurações salvas com sucesso!");
+    }, 800);
+  };
 
   const copyKey = () => {
     navigator.clipboard.writeText(streamKey);
@@ -80,11 +103,19 @@ export default function StreamManager() {
                <CardContent className="space-y-4">
                   <div className="space-y-2">
                      <Label>Título</Label>
-                     <Input placeholder="Digite um título chamativo..." defaultValue="Minha Gameplay de Alto Nível" />
+                     <Input
+                        placeholder="Digite um título chamativo..."
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                     />
                   </div>
                   <div className="space-y-2">
                      <Label>Notificação de Início</Label>
-                     <Input placeholder="Texto que será enviado aos seguidores..." defaultValue="🔴 Estou AO VIVO! Corre pra cá!" />
+                     <Input
+                        placeholder="Texto que será enviado aos seguidores..."
+                        value={notification}
+                        onChange={(e) => setNotification(e.target.value)}
+                     />
                   </div>
                   <div className="flex items-center justify-between pt-4">
                      <div className="space-y-0.5">
@@ -93,8 +124,12 @@ export default function StreamManager() {
                      </div>
                      <Switch defaultChecked />
                   </div>
-                  <Button className="w-full btn-gold font-black uppercase mt-4">
-                     <Save size={16} className="mr-2" /> Salvar Alterações
+                  <Button
+                    className="w-full btn-gold font-black uppercase mt-4"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                  >
+                     <Save size={16} className="mr-2" /> {isSaving ? "Salvando..." : "Salvar Alterações"}
                   </Button>
                </CardContent>
             </Card>
