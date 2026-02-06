@@ -3,6 +3,7 @@ import { Palette } from 'lucide-react';
 import { SubTiersConfig } from '@/components/stream/customization/SubTiersConfig';
 import { BadgesEditor } from '@/components/stream/customization/BadgesEditor';
 import { TrailerUploader } from '@/components/stream/customization/TrailerUploader';
+import { VisualsEditor } from '@/components/stream/customization/VisualsEditor';
 import { SocialLinks } from '@/components/stream/customization/SocialLinks';
 import { TeamsManager } from '@/components/stream/customization/TeamsManager';
 
@@ -18,6 +19,7 @@ export default function Customization() {
           <div className="lg:col-span-2">
              <SubTiersConfig />
           </div>
+          <VisualsEditor />
           <BadgesEditor />
           <TrailerUploader />
           <SocialLinks />

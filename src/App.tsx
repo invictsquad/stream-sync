@@ -10,13 +10,18 @@ import Analytics from "./pages/dashboard/Analytics";
 import Community from "./pages/dashboard/Community";
 import Customization from "./pages/dashboard/Customization";
 import Tools from "./pages/dashboard/Tools";
+import GoLive from "./pages/dashboard/GoLive";
 import Login from "./pages/Login";
 import WatchStream from "./pages/WatchStream";
 import ChatOverlay from "./pages/ChatOverlay";
 import Categories from "./pages/Categories";
 import Profile from "./pages/Profile";
+import Wallet from "./pages/Wallet";
+import Settings from "./pages/Settings";
+import History from "./pages/History";
+import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
-import { MobileNav } from "./components/layout/MobileNav";
+import { MainLayout } from "./components/layout/MainLayout";
 
 const queryClient = new QueryClient();
 
@@ -30,9 +35,7 @@ const AuthenticatedApp = () => {
 
   return (
     <BrowserRouter>
-      <div className="flex flex-col h-dvh overflow-hidden bg-black text-white">
-        {/* Main Content Area - Scrollable */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
+      <MainLayout>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/watch/:id" element={<WatchStream />} />
@@ -41,15 +44,18 @@ const AuthenticatedApp = () => {
             <Route path="/dashboard/community" element={<Community />} />
             <Route path="/dashboard/customization" element={<Customization />} />
             <Route path="/dashboard/tools" element={<Tools />} />
+            <Route path="/dashboard/go-live" element={<GoLive />} />
             <Route path="/categories" element={<Categories />} />
+            <Route path="/search" element={<Search />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/wallet" element={<Wallet />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/history" element={<History />} />
             <Route path="/overlay/chat/:id" element={<ChatOverlay />} />
             <Route path="/login" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </div>
-        <MobileNav />
-      </div>
+      </MainLayout>
     </BrowserRouter>
   );
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { Users, ShieldCheck } from 'lucide-react';
 import { AuditLog } from '@/components/stream/community/AuditLog';
 import { BannedUsers } from '@/components/stream/community/BannedUsers';
+import { Moderators } from '@/components/stream/community/Moderators';
 import { AutoHostConfig } from '@/components/stream/community/AutoHostConfig';
 import { CommunityRules } from '@/components/stream/community/CommunityRules';
 import { ChatBotManager } from '@/components/stream/community/ChatBotManager';
@@ -21,6 +22,9 @@ export default function Community() {
              <div className="grid md:grid-cols-2 gap-6">
                 <AuditLog />
                 <BannedUsers />
+                <div className="md:col-span-2">
+                   <Moderators />
+                </div>
              </div>
              <CommunityRules />
              <AutoModConfig />
