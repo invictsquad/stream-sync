@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from "sonner";
 
 export default function Login() {
   const { login } = useAuth();
-  const [loading, setLoading] = React.useState(false);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +20,8 @@ export default function Login() {
     setTimeout(() => {
       login();
       setLoading(false);
+      toast.success("Bem-vindo de volta!");
+      navigate('/');
     }, 800);
   };
 
@@ -45,7 +50,6 @@ export default function Login() {
                 type="email" 
                 defaultValue="test@stream.com"
                 className="bg-black/50 border-zinc-700 text-white"
-                readOnly
               />
             </div>
             <div className="space-y-2">
@@ -55,7 +59,6 @@ export default function Login() {
                 type="password" 
                 defaultValue="password123"
                 className="bg-black/50 border-zinc-700 text-white"
-                readOnly
               />
             </div>
           </CardContent>
