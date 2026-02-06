@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Compass, Video, History, User, LogOut, Settings, Wallet, ChevronLeft, ChevronRight, LayoutDashboard, BarChart3, DollarSign, Trophy, Radio, Scissors, Smile, Calendar, Zap, Briefcase, Plug, Code, MessageSquare, Share2, Users, Heart, Package, ShoppingBag, Music2, Flame, ShieldAlert, Info, FileText, MessageSquarePlus } from 'lucide-react';
+import { Home, Compass, Video, History, User, LogOut, Settings, Wallet, ChevronLeft, ChevronRight, LayoutDashboard, BarChart3, DollarSign, Trophy, Radio, Scissors, Smile, Calendar, Zap, Briefcase, Plug, Code, MessageSquare, Share2, Users, Heart, Package, ShoppingBag, Music2, Flame, ShieldAlert, Info, FileText, MessageSquarePlus, Film, ListVideo, Coins, Megaphone, Shield } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -24,15 +24,18 @@ const CREATOR_ITEMS = [
   { label: 'Gerenciador', icon: Radio, path: '/dashboard/stream-manager' },
   { label: 'Analytics', icon: BarChart3, path: '/dashboard/analytics' },
   { label: 'Monetização', icon: DollarSign, path: '/dashboard/earnings' },
+  { label: 'Publicidade', icon: Megaphone, path: '/dashboard/ads' },
   { label: 'Conquistas', icon: Trophy, path: '/dashboard/achievements' },
 ];
 
 const CONTENT_ITEMS = [
+  { label: 'Vídeos (VOD)', icon: Film, path: '/dashboard/content' },
+  { label: 'Coleções', icon: ListVideo, path: '/dashboard/playlists' },
   { label: 'Clipes', icon: Scissors, path: '/dashboard/clips' },
   { label: 'Emotes', icon: Smile, path: '/dashboard/emotes' },
+  { label: 'Pontos', icon: Coins, path: '/dashboard/channel-points' },
   { label: 'Agenda', icon: Calendar, path: '/dashboard/schedule' },
-  { label: 'Interações', icon: Zap, path: '/dashboard/interactions' },
-  { label: 'Patrocinadores', icon: Briefcase, path: '/dashboard/sponsors' },
+  { label: 'Moderação', icon: Shield, path: '/dashboard/unban-requests' },
 ];
 
 const TOOLS_ITEMS = [
