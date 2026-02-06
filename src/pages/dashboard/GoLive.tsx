@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Radio, Video, Mic, Hash, ArrowRight, Save, Layout, Settings } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,22 +13,43 @@ import { TagManager } from '@/components/stream/TagManager';
 import { PollCreator } from '@/components/stream/PollCreator';
 import { toast } from "sonner";
 import { useNavigate } from 'react-router-dom';
+import { storage } from '@/lib/storage';
 
 export default function GoLive() {
   const navigate = useNavigate();
   const [title, setTitle] = useState("Minha Nova Transmissão");
   const [category, setCategory] = useState("games");
   const [tags, setTags] = useState("#fps #ranked");
+  const [notification, setNotification] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    // Load saved settings
+    const settings = storage.stream.get();
+    setTitle(settings.title);
+    setCategory(settings.category);
+    setTags(settings.tags.join(" "));
+    setNotification(settings.notification);
+  }, []);
 
   const handleStart = () => {
     setIsSaving(true);
+
+    // Save to storage
+    storage.stream.save({
+        title,
+        category,
+        tags: tags.split(' ').filter(t => t.startsWith('#')),
+        notification
+    });
+
     setTimeout(() => {
         setIsSaving(false);
         toast.success("Informações da live atualizadas!");
         toast.info("Conecte seu software de transmissão (OBS) para iniciar.");
+        // Redirect to watch page to see changes (in a real app, you'd go to dashboard or stream manager)
         navigate("/dashboard");
-    }, 1500);
+    }, 800);
   };
 
   return (
@@ -114,6 +135,8 @@ export default function GoLive() {
                     <div className="space-y-2">
                        <Label>Texto da Notificação</Label>
                        <Textarea
+                         value={notification}
+                         onChange={(e) => setNotification(e.target.value)}
                          placeholder="Entrei ao vivo! Venha conferir..."
                          className="bg-black/20 border-white/10"
                        />
