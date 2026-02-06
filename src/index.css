@@ -31,31 +31,37 @@
     --border: 45 20% 15%;
     --ring: 45 100% 50%;
 
-    --radius: 1.25rem;
+    --radius: 0.75rem; /* Reduced radius for compact feel */
 
     --gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #B8860B 100%);
   }
 
   html {
     height: 100%;
-    /* Removed overflow: hidden to allow native scrolling */
   }
 
   body {
     min-height: 100%;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    font-size: 14px; /* Reduced base font size for compactness */
   }
 
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
+  /* Compact Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
   }
 }
 
@@ -63,11 +69,11 @@
   .glass-card {
     background: rgba(15, 15, 15, 0.7);
     border: 1px solid rgba(255, 215, 0, 0.1);
-    @apply backdrop-blur-2xl rounded-[2rem];
+    @apply backdrop-blur-2xl rounded-xl; /* More compact radius */
   }
 
   .gold-glow {
-    box-shadow: 0 0 40px rgba(255, 215, 0, 0.12);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.12); /* Tighter glow */
   }
 
   .gradient-text {
@@ -76,7 +82,16 @@
   }
 
   .btn-gold {
-    @apply bg-primary hover:bg-primary-hover text-black font-black uppercase italic transition-all shadow-glow-sm flex items-center justify-center;
+    @apply bg-primary hover:bg-primary-hover text-black font-black uppercase italic transition-all shadow-glow-sm flex items-center justify-center text-xs tracking-wide h-9 px-4;
+  }
+
+  /* Compact Utility Classes */
+  .compact-card {
+    @apply p-4 rounded-xl border border-white/5 bg-card/50;
+  }
+
+  .compact-header {
+    @apply text-lg font-black italic uppercase tracking-tighter mb-2;
   }
 }
 
@@ -88,4 +103,9 @@
     @apply font-black uppercase italic tracking-tighter;
     font-family: 'Outfit', sans-serif;
   }
+
+  /* Mobile First Adjustments */
+  h1 { @apply text-2xl md:text-3xl; }
+  h2 { @apply text-xl md:text-2xl; }
+  h3 { @apply text-lg md:text-xl; }
 }
