@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
@@ -55,22 +55,67 @@ import About from "./pages/About";
 import Press from "./pages/Press";
 import StreamSummary from "./pages/dashboard/analytics/StreamSummary";
 import AutoModRules from "./pages/dashboard/automod/AutoModRules";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyEmail from "./pages/VerifyEmail";
+import Onboarding from "./pages/Onboarding";
+import Maintenance from "./pages/Maintenance";
+import Content from "./pages/dashboard/Content";
+import Playlists from "./pages/dashboard/Playlists";
+import Copyright from "./pages/dashboard/Copyright";
+import Subtitles from "./pages/dashboard/Subtitles";
+import Editors from "./pages/dashboard/Editors";
+import ChannelPoints from "./pages/dashboard/ChannelPoints";
+import Predictions from "./pages/dashboard/Predictions";
+import HypeTrain from "./pages/dashboard/HypeTrain";
+import Giveaways from "./pages/dashboard/Giveaways";
+import Polls from "./pages/dashboard/Polls";
+import Ads from "./pages/dashboard/Ads";
+import Revenue from "./pages/dashboard/Revenue";
+import Payouts from "./pages/dashboard/Payouts";
+import Bits from "./pages/dashboard/Bits";
+import Charity from "./pages/dashboard/Charity";
+import ModView from "./pages/ModView";
+import UnbanRequests from "./pages/dashboard/UnbanRequests";
+import UserLog from "./pages/dashboard/UserLog";
+import Friends from "./pages/Friends";
+import CategoryDetail from "./pages/CategoryDetail";
+import TagDetail from "./pages/TagDetail";
+import Error500 from "./pages/Error500";
+import Report from "./pages/Report";
+import Sitemap from "./pages/Sitemap";
+import AccessibilityStatement from "./pages/accessibility/Statement";
 import { MainLayout } from "./components/layout/MainLayout";
 
 const queryClient = new QueryClient();
 
-// Authenticated App Shell
-const AuthenticatedApp = () => {
+const ProtectedRoute = () => {
   const { isAuthenticated } = useAuth();
-
   if (!isAuthenticated) {
-    return <Login />;
+    return <Navigate to="/login" replace />;
   }
+  return (
+    <MainLayout>
+      <Outlet />
+    </MainLayout>
+  );
+};
 
+const AppRoutes = () => {
   return (
     <BrowserRouter>
-      <MainLayout>
-          <Routes>
+      <Routes>
+        {/* Public Routes (No Layout) */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/maintenance" element={<Maintenance />} />
+        <Route path="/500" element={<Error500 />} />
+
+        {/* Protected Routes (With Layout) */}
+        <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Index />} />
             <Route path="/watch/:id" element={<WatchStream />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -96,7 +141,27 @@ const AuthenticatedApp = () => {
             <Route path="/dashboard/customization" element={<Customization />} />
             <Route path="/dashboard/tools" element={<Tools />} />
             <Route path="/dashboard/go-live" element={<GoLive />} />
+            <Route path="/dashboard/content" element={<Content />} />
+            <Route path="/dashboard/playlists" element={<Playlists />} />
+            <Route path="/dashboard/copyright" element={<Copyright />} />
+            <Route path="/dashboard/subtitles" element={<Subtitles />} />
+            <Route path="/dashboard/editors" element={<Editors />} />
+            <Route path="/dashboard/channel-points" element={<ChannelPoints />} />
+            <Route path="/dashboard/predictions" element={<Predictions />} />
+            <Route path="/dashboard/hype-train" element={<HypeTrain />} />
+            <Route path="/dashboard/giveaways" element={<Giveaways />} />
+            <Route path="/dashboard/polls" element={<Polls />} />
+            <Route path="/dashboard/ads" element={<Ads />} />
+            <Route path="/dashboard/revenue" element={<Revenue />} />
+            <Route path="/dashboard/payouts" element={<Payouts />} />
+            <Route path="/dashboard/bits" element={<Bits />} />
+            <Route path="/dashboard/charity" element={<Charity />} />
+            <Route path="/dashboard/unban-requests" element={<UnbanRequests />} />
+            <Route path="/dashboard/user-log" element={<UserLog />} />
+
             <Route path="/categories" element={<Categories />} />
+            <Route path="/category/:id" element={<CategoryDetail />} />
+            <Route path="/tag/:id" element={<TagDetail />} />
             <Route path="/search" element={<Search />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/wallet" element={<Wallet />} />
@@ -110,12 +175,20 @@ const AuthenticatedApp = () => {
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/about" element={<About />} />
             <Route path="/press" element={<Press />} />
+            <Route path="/report" element={<Report />} />
+            <Route path="/sitemap" element={<Sitemap />} />
+            <Route path="/accessibility" element={<AccessibilityStatement />} />
+            <Route path="/friends" element={<Friends />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/team/:id" element={<Team />} />
             <Route path="/clip/:id" element={<ClipView />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/mod-view" element={<ModView />} />
+
+            {/* Overlay - likely no layout needed actually, but keeping consistent for now.
+                Ideally Overlays should be outside MainLayout.
+            */}
             <Route path="/overlay/chat/:id" element={<ChatOverlay />} />
-            <Route path="/login" element={<Navigate to="/" replace />} />
 
             {/* Support & Legal */}
             <Route path="/help" element={<HelpCenter />} />
@@ -125,11 +198,11 @@ const AuthenticatedApp = () => {
             <Route path="/guidelines" element={<Guidelines />} />
 
             <Route path="*" element={<NotFound />} />
-          </Routes>
-      </MainLayout>
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
-};
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -137,7 +210,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner position="top-center" expand={true} />
-        <AuthenticatedApp />
+        <AppRoutes />
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
