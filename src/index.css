@@ -36,10 +36,16 @@
     --gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #B8860B 100%);
   }
 
-  html, body {
+  html {
     height: 100%;
-    overflow: hidden; /* Prevent global scroll, handle in App shell */
-    touch-action: manipulation; /* Prevent accidental zooming */
+    /* Removed overflow: hidden to allow native scrolling */
+  }
+
+  body {
+    min-height: 100%;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    overflow-x: hidden; /* Prevent horizontal scroll */
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
@@ -76,7 +82,7 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground font-sans antialiased selection:bg-primary selection:text-black;
+    @apply font-sans antialiased selection:bg-primary selection:text-black;
   }
   h1, h2, h3, h4, .font-display {
     @apply font-black uppercase italic tracking-tighter;

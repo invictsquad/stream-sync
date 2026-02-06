@@ -31,6 +31,7 @@ import { ShareModal } from '@/components/ui/ShareModal';
 import { NotificationCenter } from '@/components/layout/NotificationCenter';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { storage, Comment } from '@/lib/storage'; // Updated storage import
 
 const MOCK_LIVES = [
   { id: 1, streamer: 'Gaules', title: 'Major de CS2 - Clutch Live Diamond Stream', viewers: '185k', category: 'Games', avatar: 'https://i.pravatar.cc/150?u=gaules', pix: 'gaules@clutch.live', isFollowing: true, isSubscribed: false },
@@ -51,39 +52,25 @@ const SUBSCRIPTION_PLANS = [
   { level: 3, name: 'Gold', price: 49.99, benefits: ['Todos do Silver', 'Acesso a VODs', 'Grupo Exclusivo Discord'] },
 ];
 
-interface Message {
-  id: number;
-  user: string;
-  text: string;
-  type: 'system' | 'gift' | 'chat' | 'voice';
-  giftIcon?: LucideIcon;
-  badge?: 'streamer' | 'mod' | 'subscriber';
-}
-
-const ChatMessage = ({ message }: { message: Message }) => {
+const ChatMessage = ({ message }: { message: Comment }) => {
   const isGift = message.type === 'gift';
   const isVoice = message.type === 'voice';
 
-  const getBadge = (badge?: Message['badge']) => {
-    switch (badge) {
-      case 'streamer': return <span className="bg-primary text-black px-1 rounded text-[8px] font-black uppercase italic mr-1">Streamer</span>;
-      case 'mod': return <span className="bg-blue-500 text-white px-1 rounded text-[8px] font-black uppercase italic mr-1">Mod</span>;
-      case 'subscriber': return <span className="bg-fuchsia-500 text-white px-1 rounded text-[8px] font-black uppercase italic mr-1">Sub</span>;
-      default: return null;
-    }
-  };
+  // Icon handling (mock)
+  const GiftIcon = message.giftIcon && GIFTS.find(g => g.name === message.giftIcon)?.icon || Gem;
 
   return (
-    <div key={message.id} className={`text-xs leading-relaxed ${isGift ? 'bg-primary/10 border border-primary/20 p-3 rounded-xl gold-glow animate-in zoom-in-95 duration-300' : ''} ${isVoice ? 'bg-secondary/50 border border-white/10 p-2 rounded-lg' : ''}`}>
-      {isGift && message.giftIcon && (
+    <div className={`text-xs leading-relaxed ${isGift ? 'bg-primary/10 border border-primary/20 p-3 rounded-xl gold-glow animate-in zoom-in-95 duration-300' : ''} ${isVoice ? 'bg-secondary/50 border border-white/10 p-2 rounded-lg' : ''}`}>
+      {isGift && (
         <div className="flex items-center gap-2 mb-1">
-           <message.giftIcon size={14} className="text-primary" />
+           <GiftIcon size={14} className="text-primary" />
            <span className="text-[9px] font-black uppercase text-primary tracking-widest">Presente Elite</span>
         </div>
       )}
       {isVoice && <Mic size={12} className="text-red-500 mr-1 inline" />}
       
-      {getBadge(message.badge)}
+      {/* Badge rendering would be enhanced with real user roles */}
+      {message.user === 'Streamer' && <span className="bg-primary text-black px-1 rounded text-[8px] font-black uppercase italic mr-1">Streamer</span>}
       
       <span className={`${isGift ? 'text-white' : 'text-primary'} font-black italic mr-2`}>{message.user}:</span> 
       <span className={isGift ? 'text-slate-200 font-bold' : 'text-slate-400 font-medium'}>{message.text}</span>
@@ -102,14 +89,14 @@ export default function WatchStream() {
   const [showGiftShop, setShowGiftShop] = useState(false);
   const [showRewardsShop, setShowRewardsShop] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-  const [userBalance, setUserBalance] = useState(1500);
+
+  // Storage State
+  const [userBalance, setUserBalance] = useState(0);
+  const [messages, setMessages] = useState<Comment[]>([]);
+
   const [channelPoints, setChannelPoints] = useState(2500);
   const [chatMessage, setChatMessage] = useState('');
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 1, user: 'Sistema', text: 'Respeite a comunidade Diamond.', type: 'system', giftIcon: undefined },
-    { id: 2, user: 'Streamer', text: 'Bem-vindos à live!', type: 'chat', badge: 'streamer' },
-    { id: 3, user: 'Moderador', text: 'Lembrem-se das regras!', type: 'chat', badge: 'mod' },
-  ]);
+
   const [activeGiftAlert, setActiveGiftAlert] = useState<{ name: string, icon: LucideIcon } | null>(null);
   const [isFollowing, setIsFollowing] = useState(stream.isFollowing);
   const [isSubscribed, setIsSubscribed] = useState(stream.isSubscribed);
@@ -119,40 +106,52 @@ export default function WatchStream() {
   const [showShare, setShowShare] = useState(false);
 
   useEffect(() => {
-    const savedBalance = localStorage.getItem('clutch_diamonds');
-    if (savedBalance) setUserBalance(Number(savedBalance));
+    // Load data from storage
+    const wallet = storage.wallet.get();
+    setUserBalance(wallet.balance);
+
+    const storedMessages = storage.comments.get(stream.id);
+    setMessages(storedMessages);
+
+    // Initial mock messages if empty
+    if (storedMessages.length === 0) {
+        // Just for demo, usually we wouldn't overwrite
+    }
 
     const savedTheater = localStorage.getItem('theater_mode');
     if (savedTheater === 'true') setIsTheaterMode(true);
-  }, []);
+
+    // Poll for comments (Mock real-time)
+    const interval = setInterval(() => {
+        setMessages(storage.comments.get(stream.id));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [stream.id]);
 
   useEffect(() => {
     localStorage.setItem('theater_mode', String(isTheaterMode));
   }, [isTheaterMode]);
 
-  const updateBalance = (newBalance: number) => {
-    setUserBalance(newBalance);
-    localStorage.setItem('clutch_diamonds', String(newBalance));
-  };
-
   const handleSendGift = (gift: typeof GIFTS[0]) => {
-    if (userBalance < gift.price) {
+    const currentWallet = storage.wallet.get();
+    if (currentWallet.balance < gift.price) {
       toast.error("Saldo insuficiente de Diamonds!");
       return;
     }
 
-    const newBalance = userBalance - gift.price;
-    updateBalance(newBalance);
+    // Update Wallet in Storage
+    const newWallet = storage.wallet.update(gift.price, `Presente: ${gift.name}`, 'debit');
+    setUserBalance(newWallet.balance);
 
-    const newMessage: Message = {
-      id: Date.now(),
-      user: 'Você',
-      text: `enviou um ${gift.name.toUpperCase()}! 💎`,
-      type: 'gift',
-      giftIcon: gift.icon
-    };
+    // Add Comment to Storage
+    storage.comments.add(stream.id, {
+        user: 'Você',
+        text: `enviou um ${gift.name.toUpperCase()}! 💎`,
+        type: 'gift',
+        giftIcon: gift.name
+    });
 
-    setMessages(prev => [...prev, newMessage]);
     setShowGiftShop(false);
     
     setActiveGiftAlert({ name: gift.name, icon: gift.icon });
@@ -164,16 +163,6 @@ export default function WatchStream() {
     });
   };
 
-  const handleSimulateVoiceMessage = () => {
-    const voiceMessage: Message = {
-      id: Date.now() + 1,
-      user: 'VoiceUser',
-      text: 'Isso é uma transcrição de voz em tempo real!',
-      type: 'voice'
-    };
-    setMessages(prev => [...prev, voiceMessage]);
-  };
-
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatMessage.trim()) return;
@@ -181,14 +170,15 @@ export default function WatchStream() {
     let text = chatMessage;
     if (text.startsWith('@')) text = `(Menção) ${text}`;
 
-    const newMessage: Message = {
-      id: Date.now(),
-      user: 'Espectador',
-      text: text,
-      type: 'chat'
-    };
-    setMessages(prev => [...prev, newMessage]);
+    storage.comments.add(stream.id, {
+        user: 'Você', // In real app get from AuthContext
+        text: text,
+        type: 'chat'
+    });
+
     setChatMessage('');
+    // State updates via polling or optimistic update could be added here
+    setMessages(storage.comments.get(stream.id));
   };
 
   const handleFollow = () => {
@@ -202,10 +192,15 @@ export default function WatchStream() {
     toast.success(`Inscrição ${planName} ativada!`, {
       description: `Você agora é um membro Elite do canal ${stream.streamer}.`
     });
-    setMessages(prev => [...prev, { id: Date.now() + 2, user: 'Sistema', text: `Obrigado por se inscrever no plano ${planName}!`, type: 'system', badge: 'subscriber' }]);
+    // Add system message
+    storage.comments.add(stream.id, {
+        user: 'Sistema',
+        text: `Você se inscreveu no plano ${planName}!`,
+        type: 'system'
+    });
   };
 
-  // --- SUB-COMPONENTS FOR CLEANER LAYOUT ---
+  // --- SUB-COMPONENTS ---
 
   const StreamInfoSection = () => (
     <div className="p-4 md:p-8 pb-24">
@@ -277,7 +272,7 @@ export default function WatchStream() {
   );
 
   const ChatSection = () => (
-    <div className="flex flex-col h-full bg-black/40 border-l border-white/5">
+    <div className="flex flex-col h-full bg-black/40 border-l border-white/5 min-h-[500px] lg:min-h-[auto]">
         <div className="p-4 border-b border-white/5 flex items-center justify-between shrink-0">
             <h2 className="text-[10px] text-primary flex items-center gap-2 font-black italic uppercase tracking-widest"><MessageSquare size={14}/> Diamond Chat</h2>
             <div className="flex items-center gap-1">
@@ -288,7 +283,8 @@ export default function WatchStream() {
             </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto min-h-0">
+        {/* Scrollable Chat Area */}
+        <div className="flex-1 overflow-y-auto min-h-0 bg-black/20">
             <div className="px-6 pt-4 space-y-2">
                 <HypeTrainWidget />
                 <PredictionWidget />
@@ -300,18 +296,30 @@ export default function WatchStream() {
             </div>
         </div>
 
+        {/* Input Area */}
         <form onSubmit={handleSendMessage} className="p-4 bg-black border-t border-white/5 flex gap-3 shrink-0">
             <Input placeholder="Diga algo VIP (@menção)" className="bg-secondary border-white/5 text-xs h-10 rounded-xl" value={chatMessage} onChange={(e) => setChatMessage(e.target.value)} />
             <Button size="icon" className="btn-gold h-10 w-10 rounded-xl shrink-0"><Send size={16}/></Button>
-            <Button type="button" size="icon" variant="secondary" className="h-10 w-10 rounded-xl shrink-0" onClick={handleSimulateVoiceMessage}><Mic size={16} className="text-red-500" /></Button>
+            {/* Voice Simulation Button */}
+            <Button type="button" size="icon" variant="secondary" className="h-10 w-10 rounded-xl shrink-0" onClick={() => {
+                 storage.comments.add(stream.id, {
+                    user: 'VoiceUser',
+                    text: 'Isso é uma transcrição de voz em tempo real!',
+                    type: 'voice'
+                 });
+            }}><Mic size={16} className="text-red-500" /></Button>
         </form>
     </div>
   );
 
+  // --- LAYOUT UPDATE: SCROLLING ENABLED ---
+  // Removed h-full/h-screen constraints on the main containers
+  // Using flex-col on mobile and grid on desktop to allow content to flow naturally
+
   return (
-    <div className="h-full bg-background text-foreground font-sans flex flex-col overflow-hidden">
+    <div className="min-h-full bg-background text-foreground font-sans flex flex-col">
       {/* Header Fixed */}
-      <header className="shrink-0 border-b border-white/5 bg-black/60 backdrop-blur-xl h-14 flex items-center px-4 justify-between sticky top-0 z-50">
+      <header className="shrink-0 border-b border-white/5 bg-black/80 backdrop-blur-xl h-14 flex items-center px-4 justify-between sticky top-0 z-[100]">
         <Link to="/"><BrandLogo size={20} textSize="text-lg" /></Link>
         <div className="flex items-center gap-4">
           <NotificationCenter />
@@ -322,9 +330,8 @@ export default function WatchStream() {
         </div>
       </header>
 
-      {/* Main Content: Mathematical Layout */}
-      {/* Desktop: Flex Row | Mobile: Flex Col */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+      {/* Main Content Area - Native Scroll */}
+      <div className="flex-1 flex flex-col lg:grid lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px] relative">
 
         {/* Modals */}
         <ReportModal open={showReport} onOpenChange={setShowReport} />
@@ -335,11 +342,10 @@ export default function WatchStream() {
         {showGiftShop && <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"><div className="bg-secondary p-8 max-w-md w-full relative rounded-3xl"><button onClick={() => setShowGiftShop(false)} className="absolute top-6 right-6 text-slate-500"><X size={24}/></button><h3 className="text-xl font-black italic uppercase mb-8">Shop</h3><div className="grid grid-cols-2 gap-4">{GIFTS.map(g => <button key={g.id} onClick={() => handleSendGift(g)} className="bg-background p-5 rounded-3xl border border-white/5 hover:border-primary"><g.icon className={`mx-auto mb-3 h-8 w-8 ${g.color}`} /><p className="text-[10px] font-black uppercase">{g.name}</p><span className="text-xs text-primary">{g.price}</span></button>)}</div></div></div>}
         {showSubscriptionModal && <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"><div className="bg-secondary p-8 max-w-3xl w-full relative rounded-3xl"><button onClick={() => setShowSubscriptionModal(false)} className="absolute top-6 right-6 text-slate-500"><X size={24}/></button><h3 className="text-2xl font-black italic uppercase mb-8 text-center">Planos</h3><div className="grid md:grid-cols-3 gap-6">{SUBSCRIPTION_PLANS.map(p => <div key={p.level} className="bg-background p-6 rounded-3xl border border-white/5"><h4 className="text-xl font-black italic uppercase mb-2">{p.name}</h4><p className="text-3xl font-black text-primary mb-4">${p.price}</p><Button onClick={() => handleSubscribe(p.name)} className="w-full btn-gold text-[10px]">Assinar</Button></div>)}</div></div></div>}
 
-        {/* Left Column (Video + Info) */}
-        {/* Mobile: Video (top fixed aspect) -> Info (hidden if chat tab) */}
-        <div className={`flex-1 flex flex-col min-h-0 bg-black transition-all ${isTheaterMode ? 'w-full' : ''}`}>
-             {/* Video Player - Always Visible */}
-             <div className="w-full aspect-video bg-black relative group shrink-0">
+        {/* Left/Main Column: Video + Info */}
+        <div className="flex flex-col min-w-0 bg-black">
+             {/* Video Player Container - Sticky or Standard */}
+             <div className={`w-full bg-black relative group shrink-0 ${isTheaterMode ? 'h-[80vh]' : 'aspect-video'}`}>
                 <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black to-secondary/20"><BrandLogo size={60} withText={false} className="opacity-10" /></div>
                 <div className="absolute top-6 left-6 bg-primary text-black px-3 py-1 rounded-full font-black text-[10px] uppercase italic tracking-widest gold-glow">Live Elite</div>
                 <MusicOverlay />
@@ -351,27 +357,25 @@ export default function WatchStream() {
              </div>
 
              {/* Mobile Tabs Switcher */}
-             <div className="flex lg:hidden h-12 border-b border-white/10 shrink-0">
+             <div className="flex lg:hidden h-12 border-b border-white/10 shrink-0 sticky top-14 bg-background z-40">
                  <button onClick={() => setMobileTab('chat')} className={`flex-1 text-xs font-black uppercase ${mobileTab === 'chat' ? 'bg-primary text-black' : 'bg-secondary text-slate-400'}`}>Chat</button>
                  <button onClick={() => setMobileTab('info')} className={`flex-1 text-xs font-black uppercase ${mobileTab === 'info' ? 'bg-primary text-black' : 'bg-secondary text-slate-400'}`}>Info & Clips</button>
              </div>
 
-             {/* Content Area */}
-             <div className="flex-1 overflow-hidden relative">
-                 {/* Desktop: StreamInfo always here. Mobile: Only if 'info' tab */}
-                 <div className={`h-full overflow-y-auto ${mobileTab === 'chat' ? 'hidden lg:block' : 'block'}`}>
-                     <StreamInfoSection />
-                 </div>
+             {/* Content: Visible based on mobile tab or always on desktop */}
+             <div className={`${mobileTab === 'chat' ? 'hidden lg:block' : 'block'}`}>
+                 <StreamInfoSection />
+             </div>
 
-                 {/* Mobile Chat View (Overlay or Separate?) - Here we swap views */}
-                 <div className={`h-full ${mobileTab === 'chat' ? 'block lg:hidden' : 'hidden'}`}>
-                     <ChatSection />
-                 </div>
+             {/* Mobile Chat rendered in main flow if tab selected */}
+             <div className={`lg:hidden ${mobileTab === 'chat' ? 'block' : 'hidden'} h-[calc(100vh-14rem)]`}>
+                <ChatSection />
              </div>
         </div>
 
         {/* Right Column (Chat) - Desktop Only */}
-        <div className={`w-80 xl:w-96 border-l border-white/5 hidden lg:flex flex-col bg-black/40 ${isTheaterMode ? '!hidden' : ''}`}>
+        {/* Sticky Chat on Desktop */}
+        <div className={`hidden lg:flex flex-col border-l border-white/5 bg-black/40 sticky top-14 h-[calc(100vh-3.5rem)] ${isTheaterMode ? '!hidden' : ''}`}>
            <ChatSection />
         </div>
 
