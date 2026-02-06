@@ -18,7 +18,7 @@ export function StreamHealthOverlay() {
        <div className="flex items-center gap-1.5">
           <Signal size={12} className={bitrate > 4000 ? "text-green-500" : "text-yellow-500"} />
           <div className="flex flex-col">
-             <span className="text-[8px] font-black uppercase text-slate-500">Bitrate</span>
+             <span className="text-[8px] font-black uppercase text-slate-500">Saúde da Stream</span>
              <span className="text-[10px] font-mono font-bold text-white">{bitrate} Kbps</span>
           </div>
        </div>

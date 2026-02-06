@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const TRANSACTIONS = [
@@ -77,23 +78,54 @@ export default function Wallet() {
           </Card>
 
           {/* Payment Methods */}
-          <Card className="bg-secondary/30 border-white/5">
-             <CardHeader>
-                <CardTitle className="text-slate-400 font-black uppercase text-xs tracking-widest">Método Padrão</CardTitle>
-             </CardHeader>
-             <CardContent className="space-y-4">
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-br from-purple-900/50 to-blue-900/50 border border-white/10">
-                   <CreditCard className="text-white" size={24} />
-                   <div className="flex-1">
-                      <p className="font-black text-white text-sm">•••• •••• •••• 4242</p>
-                      <p className="text-[10px] text-slate-400 uppercase">Mastercard</p>
+          <div className="space-y-6">
+             <Card className="bg-secondary/30 border-white/5">
+                <CardHeader>
+                   <CardTitle className="text-slate-400 font-black uppercase text-xs tracking-widest">Método Padrão</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-br from-purple-900/50 to-blue-900/50 border border-white/10">
+                      <CreditCard className="text-white" size={24} />
+                      <div className="flex-1">
+                         <p className="font-black text-white text-sm">•••• •••• •••• 4242</p>
+                         <p className="text-[10px] text-slate-400 uppercase">Mastercard</p>
+                      </div>
                    </div>
-                </div>
-                <Button variant="outline" className="w-full text-xs font-black uppercase border-dashed border-white/20">
-                   <Plus size={14} className="mr-2" /> Adicionar Cartão
-                </Button>
-             </CardContent>
-          </Card>
+                   <Button variant="outline" className="w-full text-xs font-black uppercase border-dashed border-white/20">
+                      <Plus size={14} className="mr-2" /> Adicionar Cartão
+                   </Button>
+                </CardContent>
+             </Card>
+
+             <Card className="bg-secondary/30 border-white/5">
+                <CardHeader>
+                   <CardTitle className="text-slate-400 font-black uppercase text-xs tracking-widest">Pagamentos (Creator)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                   <Dialog>
+                      <DialogTrigger asChild>
+                         <Button className="w-full btn-gold font-black uppercase text-[10px] h-10">Configurar Saque</Button>
+                      </DialogTrigger>
+                      <DialogContent className="bg-zinc-900 border-white/10 text-white">
+                         <DialogHeader>
+                            <DialogTitle className="font-black italic uppercase">Dados Bancários</DialogTitle>
+                         </DialogHeader>
+                         <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                               <Label>Chave PIX ou Conta</Label>
+                               <Input placeholder="Digite sua chave PIX..." className="bg-black/50 border-white/10" />
+                            </div>
+                            <div className="space-y-2">
+                               <Label>Nome Completo</Label>
+                               <Input placeholder="Nome do titular" className="bg-black/50 border-white/10" />
+                            </div>
+                            <Button onClick={() => toast.success("Dados bancários salvos!")} className="w-full btn-gold font-black uppercase">Salvar</Button>
+                         </div>
+                      </DialogContent>
+                   </Dialog>
+                </CardContent>
+             </Card>
+          </div>
        </div>
 
        {/* Transactions */}

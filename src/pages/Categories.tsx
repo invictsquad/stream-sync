@@ -2,6 +2,8 @@ import React from 'react';
 import { Gamepad2, Mic2, Music, Coffee, Code2, Trophy } from 'lucide-react';
 import { BrandLogo } from '../components/BrandLogo';
 import { Link } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const CATEGORIES = [
   { id: 1, name: "Games", icon: Gamepad2, color: "text-purple-400", bg: "bg-purple-500/10", count: "12.5K" },
@@ -33,6 +35,9 @@ export default function Categories() {
                   <div className="text-center">
                      <h3 className="font-black uppercase italic text-white">{cat.name}</h3>
                      <p className="text-[10px] text-slate-400 font-bold">{cat.count} viewers</p>
+                     <Button size="sm" onClick={(e) => { e.stopPropagation(); toast.success(`Seguindo categoria ${cat.name}!`); }} className="mt-2 h-7 text-[9px] w-full font-black uppercase opacity-0 group-hover:opacity-100 transition-opacity btn-gold">
+                        Seguir
+                     </Button>
                   </div>
                </div>
             ))}

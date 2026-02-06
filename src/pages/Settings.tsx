@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Settings as SettingsIcon, Shield, Lock, Bell, Link as LinkIcon, Smartphone, LogOut, Eye, EyeOff } from 'lucide-react';
+import { Settings as SettingsIcon, Shield, Lock, Bell, Link as LinkIcon, Smartphone, LogOut, Eye, EyeOff, Monitor, Ban, QrCode } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -62,6 +63,16 @@ export default function Settings() {
                       </div>
                       <Switch defaultChecked />
                    </div>
+                   <div className="flex items-center justify-between p-4 bg-black/20 rounded-xl">
+                      <div className="flex items-center gap-3">
+                         <Monitor className="text-slate-400" />
+                         <div>
+                            <p className="font-bold text-white text-sm">Tema da Interface</p>
+                            <p className="text-[10px] text-slate-500">Alternar entre claro e escuro (beta).</p>
+                         </div>
+                      </div>
+                      <Switch defaultChecked />
+                   </div>
                    <div className="flex justify-end">
                       <Button onClick={handleSave} className="btn-gold font-black uppercase">Salvar Alterações</Button>
                    </div>
@@ -89,6 +100,21 @@ export default function Settings() {
                       </div>
                       <Switch />
                    </div>
+
+                   <div className="border-t border-white/5 pt-4">
+                      <h4 className="font-black italic uppercase text-slate-400 mb-4 flex items-center gap-2"><Ban size={16} /> Usuários Bloqueados</h4>
+                      <div className="space-y-2">
+                         <div className="flex justify-between items-center bg-black/40 p-3 rounded-lg">
+                            <span className="text-sm font-bold text-slate-300">Troll_User_99</span>
+                            <Button size="sm" variant="ghost" className="text-[10px] text-red-500 hover:text-red-400 h-6">Desbloquear</Button>
+                         </div>
+                         <div className="flex justify-between items-center bg-black/40 p-3 rounded-lg">
+                            <span className="text-sm font-bold text-slate-300">SpamBot_X</span>
+                            <Button size="sm" variant="ghost" className="text-[10px] text-red-500 hover:text-red-400 h-6">Desbloquear</Button>
+                         </div>
+                      </div>
+                   </div>
+
                    <div className="flex justify-end">
                       <Button onClick={handleSave} className="btn-gold font-black uppercase">Salvar Alterações</Button>
                    </div>
@@ -117,6 +143,32 @@ export default function Settings() {
                          </div>
                       </div>
                       <Button onClick={handleSave} variant="secondary" className="font-black uppercase text-xs w-full">Alterar Senha</Button>
+                   </div>
+
+                   <div className="p-4 bg-black/20 rounded-xl border border-white/5 flex items-center justify-between">
+                      <div>
+                         <h4 className="font-black italic uppercase text-white flex items-center gap-2"><QrCode size={16} className="text-primary"/> Autenticação em 2 Fatores (2FA)</h4>
+                         <p className="text-[10px] text-slate-500">Proteja sua conta com uma camada extra de segurança.</p>
+                      </div>
+                      <Dialog>
+                         <DialogTrigger asChild>
+                            <Button size="sm" className="btn-gold text-[10px] font-black uppercase">Ativar</Button>
+                         </DialogTrigger>
+                         <DialogContent className="bg-zinc-900 border-white/10 text-white">
+                            <DialogHeader>
+                               <DialogTitle className="font-black italic uppercase">Configurar 2FA</DialogTitle>
+                            </DialogHeader>
+                            <div className="py-6 flex flex-col items-center gap-4 text-center">
+                               <div className="w-40 h-40 bg-white p-2 rounded-xl">
+                                  {/* Mock QR Code */}
+                                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ClutchLiveSecretKey" className="w-full h-full" alt="QR Code" />
+                               </div>
+                               <p className="text-xs text-slate-400">Escaneie o código com seu app autenticador (Google Auth, Authy).</p>
+                               <Input placeholder="Digite o código de 6 dígitos" className="bg-black/50 border-white/10 text-center tracking-[0.5em] font-mono text-lg" maxLength={6} />
+                               <Button onClick={() => toast.success("2FA Ativado com sucesso!")} className="w-full btn-gold font-black uppercase">Confirmar</Button>
+                            </div>
+                         </DialogContent>
+                      </Dialog>
                    </div>
 
                    <div className="border-t border-white/5 pt-6 mt-6">
