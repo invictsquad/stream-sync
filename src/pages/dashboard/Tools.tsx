@@ -9,6 +9,7 @@ import { OverlayManager } from '@/components/stream/tools/OverlayManager';
 import { SubathonTimer } from '@/components/stream/tools/SubathonTimer';
 import { DonationTicker } from '@/components/stream/tools/DonationTicker';
 import { PinnedMessageManager } from '@/components/stream/tools/PinnedMessageManager';
+import { StreamKeyManager } from '@/components/stream/StreamKeyManager';
 
 export default function Tools() {
   return (
@@ -19,6 +20,9 @@ export default function Tools() {
        </div>
 
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-3">
+             <StreamKeyManager />
+          </div>
           {/* Linha 1 */}
           <RedemptionHistory />
           <WebStreamDeck />

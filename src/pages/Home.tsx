@@ -6,6 +6,7 @@ import { RankingSection } from '../components/RankingSection';
 import { FeaturedCarousel } from '../components/layout/FeaturedCarousel';
 import Footer from '../components/Footer';
 import { BrandLogo } from '../components/BrandLogo';
+import { NotificationCenter } from '../components/layout/NotificationCenter';
 
 const CATEGORIES = [
   { name: 'Todos', icon: Radio },
@@ -57,6 +58,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-6">
+            <NotificationCenter />
             <Link to="/login" className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors italic">Login</Link>
             <Link to="/login" className="bg-primary hover:bg-primary-hover px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-glow-sm text-black italic">
               Começar Live

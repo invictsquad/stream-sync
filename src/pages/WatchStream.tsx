@@ -26,6 +26,9 @@ import { RewardsShop } from '../components/stream/RewardsShop';
 import { SocialShare } from '../components/stream/SocialShare';
 import { PlayerSettings } from '../components/stream/PlayerSettings';
 import { ChatSettings } from '../components/stream/ChatSettings';
+import { ReportModal } from '@/components/ui/ReportModal';
+import { ShareModal } from '@/components/ui/ShareModal';
+import { NotificationCenter } from '@/components/layout/NotificationCenter';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -112,11 +115,20 @@ export default function WatchStream() {
   const [isSubscribed, setIsSubscribed] = useState(stream.isSubscribed);
   const [isTheaterMode, setIsTheaterMode] = useState(false);
   const [mobileTab, setMobileTab] = useState<'chat' | 'info'>('chat');
+  const [showReport, setShowReport] = useState(false);
+  const [showShare, setShowShare] = useState(false);
 
   useEffect(() => {
     const savedBalance = localStorage.getItem('clutch_diamonds');
     if (savedBalance) setUserBalance(Number(savedBalance));
+
+    const savedTheater = localStorage.getItem('theater_mode');
+    if (savedTheater === 'true') setIsTheaterMode(true);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('theater_mode', String(isTheaterMode));
+  }, [isTheaterMode]);
 
   const updateBalance = (newBalance: number) => {
     setUserBalance(newBalance);
@@ -230,9 +242,14 @@ export default function WatchStream() {
             <button onClick={() => { setLikes(likes+1); setHasLiked(true); }} className={`flex items-center gap-2 text-xs font-black transition-all uppercase italic whitespace-nowrap ${hasLiked ? 'text-primary scale-110' : 'text-slate-500 hover:text-primary'}`}>
                 <ThumbsUp size={18} fill={hasLiked ? "currentColor" : "none"} /> {likes.toLocaleString()}
             </button>
-            <SocialShare url={window.location.href} title={stream.title} />
+            <Button variant="ghost" size="sm" onClick={() => setShowShare(true)} className="text-slate-500 hover:text-primary text-xs font-black uppercase italic whitespace-nowrap">
+                <Share2 size={16} className="mr-2" /> Compartilhar
+            </Button>
             <Button variant="ghost" size="sm" className="text-slate-500 hover:text-primary text-xs font-black uppercase italic whitespace-nowrap">
                 <Clock size={16} className="mr-2" /> Criar Clip
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setShowReport(true)} className="text-red-500/50 hover:text-red-500 text-xs font-black uppercase italic whitespace-nowrap">
+                <Flag size={16} className="mr-2" /> Denunciar
             </Button>
         </div>
 
@@ -296,9 +313,12 @@ export default function WatchStream() {
       {/* Header Fixed */}
       <header className="shrink-0 border-b border-white/5 bg-black/60 backdrop-blur-xl h-14 flex items-center px-4 justify-between sticky top-0 z-50">
         <Link to="/"><BrandLogo size={20} textSize="text-lg" /></Link>
-        <div className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-2xl border border-white/5">
-           <Gem size={14} className="text-primary" />
-           <span className="text-[10px] font-black italic">{userBalance.toLocaleString()}</span>
+        <div className="flex items-center gap-4">
+          <NotificationCenter />
+          <div className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-2xl border border-white/5">
+             <Gem size={14} className="text-primary" />
+             <span className="text-[10px] font-black italic">{userBalance.toLocaleString()}</span>
+          </div>
         </div>
       </header>
 
@@ -307,6 +327,8 @@ export default function WatchStream() {
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
 
         {/* Modals */}
+        <ReportModal open={showReport} onOpenChange={setShowReport} />
+        <ShareModal open={showShare} onOpenChange={setShowShare} />
         <RewardsShop isOpen={showRewardsShop} onClose={() => setShowRewardsShop(false)} balance={channelPoints} onRedeem={(cost) => setChannelPoints(prev => prev - cost)} />
         <AnimatePresence>{activeGiftAlert && <motion.div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 p-4 rounded-2xl bg-primary/90 text-black font-black uppercase"><div className="flex items-center gap-3"><activeGiftAlert.icon size={24} /> <span>Presente: {activeGiftAlert.name}!</span></div></motion.div>}</AnimatePresence>
         {showPix && <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"><div className="bg-secondary p-10 max-w-sm w-full text-center relative rounded-3xl"><button onClick={() => setShowPix(false)} className="absolute top-6 right-6 text-slate-500"><X size={24}/></button><DollarSign size={48} className="text-primary mx-auto mb-6" /><h3 className="text-2xl font-black italic mb-4">PIX</h3><p className="text-xs text-primary mb-8">{stream.pix}</p><Button onClick={() => {navigator.clipboard.writeText(stream.pix); toast.success("Copiado!");}} className="btn-gold w-full">Copiar</Button></div></div>}
