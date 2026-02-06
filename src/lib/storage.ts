@@ -13,6 +13,8 @@ export const STORAGE_KEYS = {
   COMMENTS: 'clutch_comments',
   STREAM_SETTINGS: 'clutch_stream_settings',
   NOTIFICATIONS: 'clutch_notifications',
+  MESSAGES: 'clutch_messages',
+  SETTINGS: 'clutch_app_settings',
 };
 
 // Types
@@ -21,7 +23,7 @@ export interface Comment {
   user: string;
   text: string;
   type: 'chat' | 'gift' | 'system' | 'voice';
-  giftIcon?: string; // name of icon
+  giftIcon?: string;
   timestamp: number;
 }
 
@@ -32,9 +34,61 @@ export interface StreamSettings {
   notification: string;
 }
 
+export interface WalletTransaction {
+  id: number;
+  type: 'credit' | 'debit';
+  amount: number;
+  desc: string;
+  date: string;
+}
+
 export interface WalletData {
   balance: number;
-  transactions: { id: number; type: 'credit' | 'debit'; amount: number; desc: string; date: string }[];
+  transactions: WalletTransaction[];
+}
+
+export interface UserProfile {
+  name: string;
+  username: string;
+  bio: string;
+  location: string;
+  website: string;
+  avatar: string;
+  banner: string;
+  socials: { platform: string; url: string }[];
+}
+
+export interface AppSettings {
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+  theme: 'dark' | 'light';
+  showOnlineStatus: boolean;
+  allowDM: boolean;
+}
+
+export interface Message {
+  id: number;
+  sender: string;
+  text: string;
+  timestamp: string;
+  read: boolean;
+}
+
+export interface Conversation {
+  id: string; // user id or username
+  user: string;
+  avatar: string;
+  messages: Message[];
+}
+
+export interface Notification {
+    id: number;
+    user: string;
+    action: string;
+    context: string;
+    time: string;
+    avatar: string;
+    read: boolean;
 }
 
 // Initial Data
@@ -54,6 +108,45 @@ const INITIAL_STREAM_SETTINGS: StreamSettings = {
 
 const INITIAL_COMMENTS: Comment[] = [
   { id: 1, user: 'System', text: 'Bem-vindo ao chat!', type: 'system', timestamp: Date.now() }
+];
+
+const INITIAL_USER: UserProfile = {
+  name: "John Doe",
+  username: "@johndoe_tv",
+  bio: "Apaixonado por jogos competitivos e tecnologia. Faço lives todos os dias a partir das 18h.",
+  location: "São Paulo, BR",
+  website: "johndoe.com",
+  avatar: "https://github.com/shadcn.png",
+  banner: "https://www.transparenttextures.com/patterns/cubes.png",
+  socials: [
+    { platform: 'Twitter', url: '@johndoe' },
+    { platform: 'Instagram', url: '@john.doe' }
+  ]
+};
+
+const INITIAL_APP_SETTINGS: AppSettings = {
+    emailNotifications: true,
+    pushNotifications: true,
+    theme: 'dark',
+    showOnlineStatus: true,
+    allowDM: false,
+};
+
+const INITIAL_NOTIFICATIONS: Notification[] = [
+    { id: 1, user: "Gaules", action: "está ao vivo:", context: "Major CS2 - Final", time: "2 min", avatar: "https://i.pravatar.cc/150?u=gaules", read: false },
+    { id: 2, user: "Alanzoka", action: "está ao vivo:", context: "Terror Indie", time: "15 min", avatar: "https://i.pravatar.cc/150?u=alanzoka", read: false },
+];
+
+const INITIAL_MESSAGES: Conversation[] = [
+    {
+        id: 'user2',
+        user: 'Maria Gamer',
+        avatar: 'https://i.pravatar.cc/150?u=maria',
+        messages: [
+            { id: 1, sender: 'Maria Gamer', text: 'Oi! Adorei a live ontem!', timestamp: new Date().toISOString(), read: true },
+            { id: 2, sender: 'me', text: 'Obrigado Maria! Apareça hoje também.', timestamp: new Date().toISOString(), read: true }
+        ]
+    }
 ];
 
 // Helper to get/set
@@ -102,18 +195,59 @@ export const storage = {
 
   comments: {
     get: (streamId: string | number) => {
-        // In a real app, this would be filtered by streamId.
-        // For mock, we share one chat or use a key suffix.
         return getStored<Comment[]>(`${STORAGE_KEYS.COMMENTS}_${streamId}`, INITIAL_COMMENTS);
     },
     add: (streamId: string | number, comment: Omit<Comment, 'id' | 'timestamp'>) => {
         const key = `${STORAGE_KEYS.COMMENTS}_${streamId}`;
         const current = getStored<Comment[]>(key, INITIAL_COMMENTS);
         const newComment = { ...comment, id: Date.now(), timestamp: Date.now() };
-        // Keep last 50 messages
         const updated = [...current, newComment].slice(-50);
         setStored(key, updated);
         return newComment;
     }
+  },
+
+  user: {
+    get: () => getStored<UserProfile>(STORAGE_KEYS.USER, INITIAL_USER),
+    update: (data: Partial<UserProfile>) => {
+        const current = getStored<UserProfile>(STORAGE_KEYS.USER, INITIAL_USER);
+        setStored(STORAGE_KEYS.USER, { ...current, ...data });
+    }
+  },
+
+  settings: {
+    get: () => getStored<AppSettings>(STORAGE_KEYS.SETTINGS, INITIAL_APP_SETTINGS),
+    update: (data: Partial<AppSettings>) => {
+        const current = getStored<AppSettings>(STORAGE_KEYS.SETTINGS, INITIAL_APP_SETTINGS);
+        setStored(STORAGE_KEYS.SETTINGS, { ...current, ...data });
+    }
+  },
+
+  messages: {
+    get: () => getStored<Conversation[]>(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES),
+    send: (conversationId: string, text: string) => {
+        const conversations = getStored<Conversation[]>(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES);
+        const updated = conversations.map(c => {
+            if (c.id === conversationId) {
+                return {
+                    ...c,
+                    messages: [...c.messages, { id: Date.now(), sender: 'me', text, timestamp: new Date().toISOString(), read: true }]
+                };
+            }
+            return c;
+        });
+        setStored(STORAGE_KEYS.MESSAGES, updated);
+        return updated;
+    }
+  },
+
+  notifications: {
+      get: () => getStored<Notification[]>(STORAGE_KEYS.NOTIFICATIONS, INITIAL_NOTIFICATIONS),
+      markAllRead: () => {
+          const notifications = getStored<Notification[]>(STORAGE_KEYS.NOTIFICATIONS, INITIAL_NOTIFICATIONS);
+          const updated = notifications.map(n => ({ ...n, read: true }));
+          setStored(STORAGE_KEYS.NOTIFICATIONS, updated);
+          return updated;
+      }
   }
 };
