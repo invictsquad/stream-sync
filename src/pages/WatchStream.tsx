@@ -345,7 +345,8 @@ export default function WatchStream() {
         {/* Left/Main Column: Video + Info */}
         <div className="flex flex-col min-w-0 bg-black">
              {/* Video Player Container - Sticky or Standard */}
-             <div className={`w-full bg-black relative group shrink-0 ${isTheaterMode ? 'h-[80vh]' : 'aspect-video'}`}>
+             {/* Fix: Added max-h constraint to prevent taking whole screen on wide monitors */}
+             <div className={`w-full bg-black relative group shrink-0 mx-auto ${isTheaterMode ? 'h-[calc(100dvh-3.5rem)]' : 'aspect-video max-h-[calc(100dvh-3.5rem)]'}`}>
                 <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black to-secondary/20"><BrandLogo size={60} withText={false} className="opacity-10" /></div>
                 <div className="absolute top-6 left-6 bg-primary text-black px-3 py-1 rounded-full font-black text-[10px] uppercase italic tracking-widest gold-glow">Live Elite</div>
                 <MusicOverlay />
