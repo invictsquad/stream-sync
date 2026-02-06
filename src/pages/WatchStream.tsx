@@ -4,7 +4,7 @@ import {
   Users, Heart, Share2, MessageSquare, Send, Bell, ThumbsUp, 
   DollarSign, X, Gem, Gift, Star, Crown, Trophy, Sparkles, LucideIcon, Mic,
   Zap, Settings, Volume2, Maximize, Minimize, Clock, TrendingUp, Check,
-  PictureInPicture, Info
+  PictureInPicture, Info, Flag
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
