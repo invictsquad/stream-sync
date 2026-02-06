@@ -7,6 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { StreamKeyManager } from '@/components/stream/StreamKeyManager';
+import { StreamHealthOverlay } from '@/components/stream/StreamHealthOverlay';
+import { RaidManager } from '@/components/stream/RaidManager';
+import { TagManager } from '@/components/stream/TagManager';
+import { PollCreator } from '@/components/stream/PollCreator';
 import { toast } from "sonner";
 import { useNavigate } from 'react-router-dom';
 
@@ -120,6 +124,12 @@ export default function GoLive() {
 
           <div className="space-y-6">
              <StreamKeyManager />
+
+             <StreamHealthOverlay />
+
+             <RaidManager />
+
+             <PollCreator />
 
              <Card className="bg-secondary/30 border-white/5">
                 <CardHeader>

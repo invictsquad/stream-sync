@@ -2,6 +2,8 @@ import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Clock, UserPlus, Heart, MonitorPlay, Map } from 'lucide-react';
+import { ReferralDashboard } from '@/components/stream/ReferralDashboard';
+import { SponsorManager } from '@/components/stream/SponsorManager';
 
 const DATA_VIEWS = [
   { name: 'Mon', views: 4000, subs: 240 },
@@ -104,6 +106,11 @@ export default function Analytics() {
                 </ResponsiveContainer>
              </CardContent>
           </Card>
+       </div>
+
+       <div className="grid lg:grid-cols-2 gap-6 mt-6">
+          <ReferralDashboard />
+          <SponsorManager />
        </div>
     </div>
   );

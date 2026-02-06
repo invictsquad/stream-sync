@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Search as SearchIcon, Filter, Video, Users, Tag, Clapperboard, MonitorPlay } from 'lucide-react';
+import { Search as SearchIcon, Filter, Video, Users, Tag, Clapperboard, MonitorPlay, Globe } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StreamCard } from '@/components/StreamCard';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const MOCK_RESULTS = [
   { id: 1, streamer: 'Gaules', title: 'Major CS2 - Final', viewers: '185k', category: 'Games', thumbnail: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80', avatar: 'https://i.pravatar.cc/150?u=gaules', isTrending: true, tags: ['CS2', 'FPS'] },
@@ -26,9 +27,21 @@ export default function Search() {
                 autoFocus
              />
           </div>
-          <Button variant="secondary" className="h-14 px-6 rounded-2xl font-black uppercase text-xs">
-             <Filter size={16} className="mr-2" /> Filtros
-          </Button>
+          <div className="flex gap-4">
+              <Select defaultValue="all">
+                <SelectTrigger className="h-14 w-40 bg-secondary border-white/10 rounded-2xl">
+                   <div className="flex items-center gap-2"><Globe size={16} /><SelectValue /></div>
+                </SelectTrigger>
+                <SelectContent>
+                   <SelectItem value="all">Todos Idiomas</SelectItem>
+                   <SelectItem value="pt">Português</SelectItem>
+                   <SelectItem value="en">Inglês</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="secondary" className="h-14 px-6 rounded-2xl font-black uppercase text-xs">
+                 <Filter size={16} className="mr-2" /> Mais Filtros
+              </Button>
+          </div>
        </div>
 
        <Tabs defaultValue="live" className="w-full">

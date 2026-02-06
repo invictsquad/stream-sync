@@ -20,6 +20,10 @@ import Wallet from "./pages/Wallet";
 import Settings from "./pages/Settings";
 import History from "./pages/History";
 import Search from "./pages/Search";
+import Messages from "./pages/Messages";
+import Team from "./pages/Team";
+import ClipView from "./pages/ClipView";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 import { MainLayout } from "./components/layout/MainLayout";
 
@@ -51,6 +55,10 @@ const AuthenticatedApp = () => {
             <Route path="/wallet" element={<Wallet />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/history" element={<History />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/team/:id" element={<Team />} />
+            <Route path="/clip/:id" element={<ClipView />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="/overlay/chat/:id" element={<ChatOverlay />} />
             <Route path="/login" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFound />} />

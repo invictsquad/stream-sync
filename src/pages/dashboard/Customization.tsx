@@ -6,6 +6,8 @@ import { TrailerUploader } from '@/components/stream/customization/TrailerUpload
 import { VisualsEditor } from '@/components/stream/customization/VisualsEditor';
 import { SocialLinks } from '@/components/stream/customization/SocialLinks';
 import { TeamsManager } from '@/components/stream/customization/TeamsManager';
+import { GoalConfig } from '@/components/stream/GoalConfig';
+import { EmoteManager } from '@/components/stream/EmoteManager';
 
 export default function Customization() {
   return (
@@ -24,6 +26,12 @@ export default function Customization() {
           <TrailerUploader />
           <SocialLinks />
           <TeamsManager />
+          <div className="lg:col-span-2">
+            <GoalConfig />
+          </div>
+          <div className="lg:col-span-3">
+             <EmoteManager />
+          </div>
        </div>
     </div>
   );

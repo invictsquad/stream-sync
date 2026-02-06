@@ -12,7 +12,7 @@ export function VodList() {
   return (
     <div className="space-y-6">
       <h3 className="text-lg font-black italic text-white uppercase flex items-center gap-2">
-         <Play size={20} className="text-primary" /> Transmissões Passadas
+         <Play size={20} className="text-primary" /> Vídeos Recentes
       </h3>
 
       <div className="space-y-4">

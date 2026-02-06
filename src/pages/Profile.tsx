@@ -10,6 +10,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { VodList } from '@/components/stream/VodList';
+import { ScheduleList } from '@/components/stream/ScheduleList';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -109,6 +112,8 @@ export default function Profile() {
                <Tabs defaultValue="achievements" className="w-full">
                   <TabsList className="bg-secondary/50 w-full justify-start h-12 p-1 rounded-2xl mb-6">
                      <TabsTrigger value="achievements" className="rounded-xl font-bold uppercase text-xs">Conquistas</TabsTrigger>
+                     <TabsTrigger value="videos" className="rounded-xl font-bold uppercase text-xs">Vídeos</TabsTrigger>
+                     <TabsTrigger value="schedule" className="rounded-xl font-bold uppercase text-xs">Agenda</TabsTrigger>
                      <TabsTrigger value="stats" className="rounded-xl font-bold uppercase text-xs">Estatísticas</TabsTrigger>
                      <TabsTrigger value="settings" className="rounded-xl font-bold uppercase text-xs">Configurações</TabsTrigger>
                   </TabsList>
@@ -124,6 +129,14 @@ export default function Profile() {
                             ))}
                         </div>
                     </section>
+                  </TabsContent>
+
+                  <TabsContent value="videos">
+                     <VodList />
+                  </TabsContent>
+
+                  <TabsContent value="schedule">
+                     <ScheduleList />
                   </TabsContent>
 
                   <TabsContent value="stats">
